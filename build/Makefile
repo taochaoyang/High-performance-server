@@ -231,6 +231,33 @@ server.cc.s:
 	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/server.cc.s
 .PHONY : server.cc.s
 
+user.o: user.cc.o
+
+.PHONY : user.o
+
+# target to build an object file
+user.cc.o:
+	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/user.cc.o
+.PHONY : user.cc.o
+
+user.i: user.cc.i
+
+.PHONY : user.i
+
+# target to preprocess a source file
+user.cc.i:
+	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/user.cc.i
+.PHONY : user.cc.i
+
+user.s: user.cc.s
+
+.PHONY : user.s
+
+# target to generate assembly for a file
+user.cc.s:
+	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/user.cc.s
+.PHONY : user.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -252,6 +279,9 @@ help:
 	@echo "... server.o"
 	@echo "... server.i"
 	@echo "... server.s"
+	@echo "... user.o"
+	@echo "... user.i"
+	@echo "... user.s"
 .PHONY : help
 
 

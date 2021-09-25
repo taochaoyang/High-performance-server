@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/tcy/gaobingfa/common/config.cc" "/home/tcy/gaobingfa/build/CMakeFiles/main_cmake.dir/common/config.cc.o"
   "/home/tcy/gaobingfa/main.cc" "/home/tcy/gaobingfa/build/CMakeFiles/main_cmake.dir/main.cc.o"
   "/home/tcy/gaobingfa/server.cc" "/home/tcy/gaobingfa/build/CMakeFiles/main_cmake.dir/server.cc.o"
+  "/home/tcy/gaobingfa/user.cc" "/home/tcy/gaobingfa/build/CMakeFiles/main_cmake.dir/user.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

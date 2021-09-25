@@ -13,7 +13,12 @@ CMakeFiles/main_cmake.dir/main.cc.o
  /home/tcy/gaobingfa/common/config.h
  /home/tcy/gaobingfa/main.cc
  /home/tcy/gaobingfa/server.h
+ /home/tcy/gaobingfa/user.h
 CMakeFiles/main_cmake.dir/server.cc.o
  /home/tcy/gaobingfa/common/config.h
  /home/tcy/gaobingfa/server.cc
  /home/tcy/gaobingfa/server.h
+ /home/tcy/gaobingfa/user.h
+CMakeFiles/main_cmake.dir/user.cc.o
+ /home/tcy/gaobingfa/user.cc
+ /home/tcy/gaobingfa/user.h

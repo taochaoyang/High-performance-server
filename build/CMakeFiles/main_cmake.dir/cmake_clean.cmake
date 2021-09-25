@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/main_cmake.dir/server.cc.o"
   "CMakeFiles/main_cmake.dir/common/common.cc.o"
   "CMakeFiles/main_cmake.dir/common/config.cc.o"
+  "CMakeFiles/main_cmake.dir/user.cc.o"
   "main_cmake.pdb"
   "main_cmake"
 )

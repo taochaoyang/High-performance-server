@@ -12,8 +12,13 @@ CMakeFiles/main_cmake.dir/main.cc.o: ../common/common.h
 CMakeFiles/main_cmake.dir/main.cc.o: ../common/config.h
 CMakeFiles/main_cmake.dir/main.cc.o: ../main.cc
 CMakeFiles/main_cmake.dir/main.cc.o: ../server.h
+CMakeFiles/main_cmake.dir/main.cc.o: ../user.h
 
 CMakeFiles/main_cmake.dir/server.cc.o: ../common/config.h
 CMakeFiles/main_cmake.dir/server.cc.o: ../server.cc
 CMakeFiles/main_cmake.dir/server.cc.o: ../server.h
+CMakeFiles/main_cmake.dir/server.cc.o: ../user.h
+
+CMakeFiles/main_cmake.dir/user.cc.o: ../user.cc
+CMakeFiles/main_cmake.dir/user.cc.o: ../user.h
 

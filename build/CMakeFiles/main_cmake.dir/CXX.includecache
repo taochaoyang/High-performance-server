@@ -29,7 +29,7 @@ string
 -
 cstring
 -
-glog/logging.h
+vector
 -
 
 /home/tcy/gaobingfa/common/config.h
@@ -68,5 +68,17 @@ unistd.h
 
 /home/tcy/gaobingfa/server.h
 memory
+-
+vector
+-
+user.h
+/home/tcy/gaobingfa/user.h
+
+/home/tcy/gaobingfa/user.cc
+user.h
+/home/tcy/gaobingfa/user.h
+
+/home/tcy/gaobingfa/user.h
+string
 -
 
