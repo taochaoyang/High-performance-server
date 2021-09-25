@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/main_cmake.dir/main.cc.o CMakeFiles/main_cmake.dir/server.cc.o CMakeFiles/main_cmake.dir/common/common.cc.o CMakeFiles/main_cmake.dir/common/config.cc.o  -o main_cmake 

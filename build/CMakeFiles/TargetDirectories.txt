@@ -1,0 +1,3 @@
+/home/tcy/gaobingfa/build/CMakeFiles/rebuild_cache.dir
+/home/tcy/gaobingfa/build/CMakeFiles/main_cmake.dir
+/home/tcy/gaobingfa/build/CMakeFiles/edit_cache.dir
