@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main_cmake
+# Target rules for targets named GaoBingFa
 
 # Build rule for target.
-main_cmake: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 main_cmake
-.PHONY : main_cmake
+GaoBingFa: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 GaoBingFa
+.PHONY : GaoBingFa
 
 # fast build rule for target.
-main_cmake/fast:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/build
-.PHONY : main_cmake/fast
+GaoBingFa/fast:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/build
+.PHONY : GaoBingFa/fast
 
 common/common.o: common/common.cc.o
 
@@ -129,7 +129,7 @@ common/common.o: common/common.cc.o
 
 # target to build an object file
 common/common.cc.o:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/common/common.cc.o
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/common.cc.o
 .PHONY : common/common.cc.o
 
 common/common.i: common/common.cc.i
@@ -138,7 +138,7 @@ common/common.i: common/common.cc.i
 
 # target to preprocess a source file
 common/common.cc.i:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/common/common.cc.i
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/common.cc.i
 .PHONY : common/common.cc.i
 
 common/common.s: common/common.cc.s
@@ -147,7 +147,7 @@ common/common.s: common/common.cc.s
 
 # target to generate assembly for a file
 common/common.cc.s:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/common/common.cc.s
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/common.cc.s
 .PHONY : common/common.cc.s
 
 common/config.o: common/config.cc.o
@@ -156,7 +156,7 @@ common/config.o: common/config.cc.o
 
 # target to build an object file
 common/config.cc.o:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/common/config.cc.o
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/config.cc.o
 .PHONY : common/config.cc.o
 
 common/config.i: common/config.cc.i
@@ -165,7 +165,7 @@ common/config.i: common/config.cc.i
 
 # target to preprocess a source file
 common/config.cc.i:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/common/config.cc.i
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/config.cc.i
 .PHONY : common/config.cc.i
 
 common/config.s: common/config.cc.s
@@ -174,7 +174,7 @@ common/config.s: common/config.cc.s
 
 # target to generate assembly for a file
 common/config.cc.s:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/common/config.cc.s
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/config.cc.s
 .PHONY : common/config.cc.s
 
 main.o: main.cc.o
@@ -183,7 +183,7 @@ main.o: main.cc.o
 
 # target to build an object file
 main.cc.o:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/main.cc.o
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/main.cc.o
 .PHONY : main.cc.o
 
 main.i: main.cc.i
@@ -192,7 +192,7 @@ main.i: main.cc.i
 
 # target to preprocess a source file
 main.cc.i:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/main.cc.i
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/main.cc.i
 .PHONY : main.cc.i
 
 main.s: main.cc.s
@@ -201,7 +201,7 @@ main.s: main.cc.s
 
 # target to generate assembly for a file
 main.cc.s:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/main.cc.s
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/main.cc.s
 .PHONY : main.cc.s
 
 server.o: server.cc.o
@@ -210,7 +210,7 @@ server.o: server.cc.o
 
 # target to build an object file
 server.cc.o:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/server.cc.o
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/server.cc.o
 .PHONY : server.cc.o
 
 server.i: server.cc.i
@@ -219,7 +219,7 @@ server.i: server.cc.i
 
 # target to preprocess a source file
 server.cc.i:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/server.cc.i
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/server.cc.i
 .PHONY : server.cc.i
 
 server.s: server.cc.s
@@ -228,7 +228,7 @@ server.s: server.cc.s
 
 # target to generate assembly for a file
 server.cc.s:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/server.cc.s
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/server.cc.s
 .PHONY : server.cc.s
 
 user.o: user.cc.o
@@ -237,7 +237,7 @@ user.o: user.cc.o
 
 # target to build an object file
 user.cc.o:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/user.cc.o
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/user.cc.o
 .PHONY : user.cc.o
 
 user.i: user.cc.i
@@ -246,7 +246,7 @@ user.i: user.cc.i
 
 # target to preprocess a source file
 user.cc.i:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/user.cc.i
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/user.cc.i
 .PHONY : user.cc.i
 
 user.s: user.cc.s
@@ -255,7 +255,7 @@ user.s: user.cc.s
 
 # target to generate assembly for a file
 user.cc.s:
-	$(MAKE) -f CMakeFiles/main_cmake.dir/build.make CMakeFiles/main_cmake.dir/user.cc.s
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/user.cc.s
 .PHONY : user.cc.s
 
 # Help Target
@@ -265,7 +265,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... main_cmake"
+	@echo "... GaoBingFa"
 	@echo "... edit_cache"
 	@echo "... common/common.o"
 	@echo "... common/common.i"

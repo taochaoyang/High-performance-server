@@ -6,6 +6,18 @@
 
 #IncludeRegexTransform: 
 
+../common/common.h
+config.h
+../common/config.h
+iostream
+-
+
+../common/config.h
+map
+-
+memory
+-
+
 /home/tcy/gaobingfa/common/common.cc
 common.h
 /home/tcy/gaobingfa/common/common.h
@@ -13,7 +25,7 @@ common.h
 /home/tcy/gaobingfa/common/common.h
 config.h
 /home/tcy/gaobingfa/common/config.h
-glog/logging.h
+iostream
 -
 
 /home/tcy/gaobingfa/common/config.cc
@@ -55,8 +67,8 @@ memory
 /home/tcy/gaobingfa/server.cc
 server.h
 /home/tcy/gaobingfa/server.h
-common/config.h
-/home/tcy/gaobingfa/common/config.h
+config.h
+/home/tcy/gaobingfa/config.h
 sys/socket.h
 -
 arpa/inet.h
@@ -69,6 +81,8 @@ cstring
 -
 
 /home/tcy/gaobingfa/server.h
+common.h
+/home/tcy/gaobingfa/common.h
 memory
 -
 map
@@ -83,6 +97,8 @@ user.h
 /home/tcy/gaobingfa/user.h
 
 /home/tcy/gaobingfa/user.h
+common.h
+/home/tcy/gaobingfa/common.h
 string
 -
 
