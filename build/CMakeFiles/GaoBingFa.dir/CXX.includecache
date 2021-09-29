@@ -11,6 +11,8 @@ config.h
 ../common/config.h
 iostream
 -
+cstdio
+-
 
 ../common/config.h
 map
@@ -18,14 +20,12 @@ map
 memory
 -
 
-/home/tcy/gaobingfa/common/common.cc
-common.h
-/home/tcy/gaobingfa/common/common.h
-
 /home/tcy/gaobingfa/common/common.h
 config.h
 /home/tcy/gaobingfa/common/config.h
 iostream
+-
+cstdio
 -
 
 /home/tcy/gaobingfa/common/config.cc

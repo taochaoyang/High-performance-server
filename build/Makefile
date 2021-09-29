@@ -123,33 +123,6 @@ GaoBingFa/fast:
 	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/build
 .PHONY : GaoBingFa/fast
 
-common/common.o: common/common.cc.o
-
-.PHONY : common/common.o
-
-# target to build an object file
-common/common.cc.o:
-	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/common.cc.o
-.PHONY : common/common.cc.o
-
-common/common.i: common/common.cc.i
-
-.PHONY : common/common.i
-
-# target to preprocess a source file
-common/common.cc.i:
-	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/common.cc.i
-.PHONY : common/common.cc.i
-
-common/common.s: common/common.cc.s
-
-.PHONY : common/common.s
-
-# target to generate assembly for a file
-common/common.cc.s:
-	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/common.cc.s
-.PHONY : common/common.cc.s
-
 common/config.o: common/config.cc.o
 
 .PHONY : common/config.o
@@ -267,9 +240,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... GaoBingFa"
 	@echo "... edit_cache"
-	@echo "... common/common.o"
-	@echo "... common/common.i"
-	@echo "... common/common.s"
 	@echo "... common/config.o"
 	@echo "... common/config.i"
 	@echo "... common/config.s"

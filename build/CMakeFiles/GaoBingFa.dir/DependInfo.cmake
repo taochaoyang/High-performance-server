@@ -4,7 +4,6 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/tcy/gaobingfa/common/common.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/common/common.cc.o"
   "/home/tcy/gaobingfa/common/config.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/common/config.cc.o"
   "/home/tcy/gaobingfa/main.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/main.cc.o"
   "/home/tcy/gaobingfa/server.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/server.cc.o"

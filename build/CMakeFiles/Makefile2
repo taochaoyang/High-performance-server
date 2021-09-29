@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /home/tcy/gaobingfa/build
 CMakeFiles/GaoBingFa.dir/all:
 	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/depend
 	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target GaoBingFa"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target GaoBingFa"
 .PHONY : CMakeFiles/GaoBingFa.dir/all
 
 # Include target in all.
@@ -76,7 +76,7 @@ all: CMakeFiles/GaoBingFa.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/GaoBingFa.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/tcy/gaobingfa/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tcy/gaobingfa/build/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/GaoBingFa.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/tcy/gaobingfa/build/CMakeFiles 0
 .PHONY : CMakeFiles/GaoBingFa.dir/rule
