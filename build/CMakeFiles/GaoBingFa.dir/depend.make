@@ -4,7 +4,16 @@
 CMakeFiles/GaoBingFa.dir/common/config.cc.o: ../common/config.cc
 CMakeFiles/GaoBingFa.dir/common/config.cc.o: ../common/config.h
 
+CMakeFiles/GaoBingFa.dir/common/mutex.cc.o: ../common/mutex.cc
+CMakeFiles/GaoBingFa.dir/common/mutex.cc.o: ../common/mutex.h
+
+CMakeFiles/GaoBingFa.dir/common/sem.cc.o: ../common/sem.cc
+CMakeFiles/GaoBingFa.dir/common/sem.cc.o: ../common/sem.h
+
 CMakeFiles/GaoBingFa.dir/main.cc.o: ../common/common.h
+CMakeFiles/GaoBingFa.dir/main.cc.o: ../common/mutex.h
+CMakeFiles/GaoBingFa.dir/main.cc.o: ../common/pthread_poll.h
+CMakeFiles/GaoBingFa.dir/main.cc.o: ../common/sem.h
 CMakeFiles/GaoBingFa.dir/main.cc.o: ../common/common.h
 CMakeFiles/GaoBingFa.dir/main.cc.o: ../common/config.h
 CMakeFiles/GaoBingFa.dir/main.cc.o: ../main.cc
@@ -13,6 +22,9 @@ CMakeFiles/GaoBingFa.dir/main.cc.o: ../user.h
 
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../common/common.h
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../common/config.h
+CMakeFiles/GaoBingFa.dir/server.cc.o: ../common/mutex.h
+CMakeFiles/GaoBingFa.dir/server.cc.o: ../common/pthread_poll.h
+CMakeFiles/GaoBingFa.dir/server.cc.o: ../common/sem.h
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../server.cc
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../server.h
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../user.h

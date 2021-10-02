@@ -4,8 +4,17 @@
 CMakeFiles/GaoBingFa.dir/common/config.cc.o
  /home/tcy/gaobingfa/common/config.cc
  /home/tcy/gaobingfa/common/config.h
+CMakeFiles/GaoBingFa.dir/common/mutex.cc.o
+ /home/tcy/gaobingfa/common/mutex.cc
+ /home/tcy/gaobingfa/common/mutex.h
+CMakeFiles/GaoBingFa.dir/common/sem.cc.o
+ /home/tcy/gaobingfa/common/sem.cc
+ /home/tcy/gaobingfa/common/sem.h
 CMakeFiles/GaoBingFa.dir/main.cc.o
  ../common/common.h
+ ../common/mutex.h
+ ../common/pthread_poll.h
+ ../common/sem.h
  /home/tcy/gaobingfa/common/common.h
  /home/tcy/gaobingfa/common/config.h
  /home/tcy/gaobingfa/main.cc
@@ -14,6 +23,9 @@ CMakeFiles/GaoBingFa.dir/main.cc.o
 CMakeFiles/GaoBingFa.dir/server.cc.o
  ../common/common.h
  ../common/config.h
+ ../common/mutex.h
+ ../common/pthread_poll.h
+ ../common/sem.h
  /home/tcy/gaobingfa/server.cc
  /home/tcy/gaobingfa/server.h
  /home/tcy/gaobingfa/user.h

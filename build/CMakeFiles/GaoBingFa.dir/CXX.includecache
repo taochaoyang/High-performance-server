@@ -20,6 +20,32 @@ map
 memory
 -
 
+../common/mutex.h
+pthread.h
+-
+exception
+-
+
+../common/pthread_poll.h
+common.h
+../common/common.h
+list
+-
+cstdio
+-
+exception
+-
+pthread.h
+-
+mutex.h
+../common/mutex.h
+sem.h
+../common/sem.h
+
+../common/sem.h
+semaphore.h
+-
+
 /home/tcy/gaobingfa/common/common.h
 config.h
 /home/tcy/gaobingfa/common/config.h
@@ -48,6 +74,26 @@ vector
 map
 -
 memory
+-
+
+/home/tcy/gaobingfa/common/mutex.cc
+mutex.h
+/home/tcy/gaobingfa/common/mutex.h
+
+/home/tcy/gaobingfa/common/mutex.h
+pthread.h
+-
+exception
+-
+
+/home/tcy/gaobingfa/common/sem.cc
+sem.h
+/home/tcy/gaobingfa/common/sem.h
+exception
+-
+
+/home/tcy/gaobingfa/common/sem.h
+semaphore.h
 -
 
 /home/tcy/gaobingfa/main.cc
@@ -97,6 +143,8 @@ user.h
 /home/tcy/gaobingfa/user.h
 pthread.h
 -
+pthread_poll.h
+/home/tcy/gaobingfa/pthread_poll.h
 set
 -
 
@@ -108,5 +156,7 @@ user.h
 common.h
 /home/tcy/gaobingfa/common.h
 string
+-
+netinet/in.h
 -
 

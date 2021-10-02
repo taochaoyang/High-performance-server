@@ -150,6 +150,60 @@ common/config.cc.s:
 	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/config.cc.s
 .PHONY : common/config.cc.s
 
+common/mutex.o: common/mutex.cc.o
+
+.PHONY : common/mutex.o
+
+# target to build an object file
+common/mutex.cc.o:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/mutex.cc.o
+.PHONY : common/mutex.cc.o
+
+common/mutex.i: common/mutex.cc.i
+
+.PHONY : common/mutex.i
+
+# target to preprocess a source file
+common/mutex.cc.i:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/mutex.cc.i
+.PHONY : common/mutex.cc.i
+
+common/mutex.s: common/mutex.cc.s
+
+.PHONY : common/mutex.s
+
+# target to generate assembly for a file
+common/mutex.cc.s:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/mutex.cc.s
+.PHONY : common/mutex.cc.s
+
+common/sem.o: common/sem.cc.o
+
+.PHONY : common/sem.o
+
+# target to build an object file
+common/sem.cc.o:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/sem.cc.o
+.PHONY : common/sem.cc.o
+
+common/sem.i: common/sem.cc.i
+
+.PHONY : common/sem.i
+
+# target to preprocess a source file
+common/sem.cc.i:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/sem.cc.i
+.PHONY : common/sem.cc.i
+
+common/sem.s: common/sem.cc.s
+
+.PHONY : common/sem.s
+
+# target to generate assembly for a file
+common/sem.cc.s:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/common/sem.cc.s
+.PHONY : common/sem.cc.s
+
 main.o: main.cc.o
 
 .PHONY : main.o
@@ -243,6 +297,12 @@ help:
 	@echo "... common/config.o"
 	@echo "... common/config.i"
 	@echo "... common/config.s"
+	@echo "... common/mutex.o"
+	@echo "... common/mutex.i"
+	@echo "... common/mutex.s"
+	@echo "... common/sem.o"
+	@echo "... common/sem.i"
+	@echo "... common/sem.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
