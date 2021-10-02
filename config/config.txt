@@ -1,2 +1,14 @@
+# port must be open
 port 20001
+
+# server name
 name chaoyang.tao
+
+# see listen() 
+max_conn_waiting_num 20
+
+# verfy the user
+token 666
+
+# 
+max_online_user 2

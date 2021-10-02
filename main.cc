@@ -15,32 +15,31 @@
 
 
 void run(int port) {
-    std::cout << "run" << std::endl;
+    DBG("run\n");
 
     if (port < 0) {
         server::init_ptr();
     } else {
         server::init_ptr(port);
     }
-    server::get_ptr()->keep_listen();
-
+    server::get_ptr()->start_listen_conn();
 }
 
 int main(int argc, char **argv) {
     //google::InitGoogleLogging("HelenXR_glog_program");
     //LOG(INFO) << "google log first info level message!";
-
+    DBG("argc: %d\n", argc);
+    printf("6666666666\n");
     int port = -1;
     int opt;
     while ((opt = getopt(argc, argv, "p:")) != -1) {
-        std::cout << "111";
         switch (opt) {
             case 'p':
                 port = atoi(optarg);
                 break;
             default:
                 std::cerr << "Usage : " << argv[0] << "-p port!" << std::endl;
-                exit(1);
+                exit(errno);
         }
     }
 

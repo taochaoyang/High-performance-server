@@ -79,6 +79,12 @@ unistd.h
 -
 cstring
 -
+sys/epoll.h
+-
+unistd.h
+-
+fcntl.h
+-
 
 /home/tcy/gaobingfa/server.h
 common.h
@@ -90,6 +96,8 @@ map
 user.h
 /home/tcy/gaobingfa/user.h
 pthread.h
+-
+set
 -
 
 /home/tcy/gaobingfa/user.cc
