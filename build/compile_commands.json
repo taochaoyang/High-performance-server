@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/tcy/gaobingfa/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -I/home/tcy/gaobingfa/common  -g   -D _D -o CMakeFiles/GaoBingFa.dir/main.cc.o -c /home/tcy/gaobingfa/main.cc",
+  "file": "/home/tcy/gaobingfa/main.cc"
+},
+{
+  "directory": "/home/tcy/gaobingfa/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -I/home/tcy/gaobingfa/common  -g   -D _D -o CMakeFiles/GaoBingFa.dir/server.cc.o -c /home/tcy/gaobingfa/server.cc",
+  "file": "/home/tcy/gaobingfa/server.cc"
+},
+{
+  "directory": "/home/tcy/gaobingfa/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -I/home/tcy/gaobingfa/common  -g   -D _D -o CMakeFiles/GaoBingFa.dir/user.cc.o -c /home/tcy/gaobingfa/user.cc",
+  "file": "/home/tcy/gaobingfa/user.cc"
+},
+{
+  "directory": "/home/tcy/gaobingfa/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -I/home/tcy/gaobingfa/common  -g   -D _D -o CMakeFiles/GaoBingFa.dir/common/config.cc.o -c /home/tcy/gaobingfa/common/config.cc",
+  "file": "/home/tcy/gaobingfa/common/config.cc"
+},
+{
+  "directory": "/home/tcy/gaobingfa/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -I/home/tcy/gaobingfa/common  -g   -D _D -o CMakeFiles/GaoBingFa.dir/common/mutex.cc.o -c /home/tcy/gaobingfa/common/mutex.cc",
+  "file": "/home/tcy/gaobingfa/common/mutex.cc"
+},
+{
+  "directory": "/home/tcy/gaobingfa/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -I/home/tcy/gaobingfa/common  -g   -D _D -o CMakeFiles/GaoBingFa.dir/common/sem.cc.o -c /home/tcy/gaobingfa/common/sem.cc",
+  "file": "/home/tcy/gaobingfa/common/sem.cc"
+}
+]

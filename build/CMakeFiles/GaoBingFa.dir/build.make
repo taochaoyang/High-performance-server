@@ -60,15 +60,15 @@ include CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/main.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/main.cc.o: ../main.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/GaoBingFa.dir/main.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/main.cc.o -c /home/tcy/gaobingfa/main.cc
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/main.cc.o -c /home/tcy/gaobingfa/main.cc
 
 CMakeFiles/GaoBingFa.dir/main.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GaoBingFa.dir/main.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/main.cc > CMakeFiles/GaoBingFa.dir/main.cc.i
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/main.cc > CMakeFiles/GaoBingFa.dir/main.cc.i
 
 CMakeFiles/GaoBingFa.dir/main.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GaoBingFa.dir/main.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/main.cc -o CMakeFiles/GaoBingFa.dir/main.cc.s
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/main.cc -o CMakeFiles/GaoBingFa.dir/main.cc.s
 
 CMakeFiles/GaoBingFa.dir/main.cc.o.requires:
 
@@ -84,15 +84,15 @@ CMakeFiles/GaoBingFa.dir/main.cc.o.provides.build: CMakeFiles/GaoBingFa.dir/main
 CMakeFiles/GaoBingFa.dir/server.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../server.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/GaoBingFa.dir/server.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/server.cc.o -c /home/tcy/gaobingfa/server.cc
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/server.cc.o -c /home/tcy/gaobingfa/server.cc
 
 CMakeFiles/GaoBingFa.dir/server.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GaoBingFa.dir/server.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/server.cc > CMakeFiles/GaoBingFa.dir/server.cc.i
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/server.cc > CMakeFiles/GaoBingFa.dir/server.cc.i
 
 CMakeFiles/GaoBingFa.dir/server.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GaoBingFa.dir/server.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/server.cc -o CMakeFiles/GaoBingFa.dir/server.cc.s
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/server.cc -o CMakeFiles/GaoBingFa.dir/server.cc.s
 
 CMakeFiles/GaoBingFa.dir/server.cc.o.requires:
 
@@ -108,15 +108,15 @@ CMakeFiles/GaoBingFa.dir/server.cc.o.provides.build: CMakeFiles/GaoBingFa.dir/se
 CMakeFiles/GaoBingFa.dir/user.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/user.cc.o: ../user.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/GaoBingFa.dir/user.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/user.cc.o -c /home/tcy/gaobingfa/user.cc
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/user.cc.o -c /home/tcy/gaobingfa/user.cc
 
 CMakeFiles/GaoBingFa.dir/user.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GaoBingFa.dir/user.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/user.cc > CMakeFiles/GaoBingFa.dir/user.cc.i
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/user.cc > CMakeFiles/GaoBingFa.dir/user.cc.i
 
 CMakeFiles/GaoBingFa.dir/user.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GaoBingFa.dir/user.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/user.cc -o CMakeFiles/GaoBingFa.dir/user.cc.s
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/user.cc -o CMakeFiles/GaoBingFa.dir/user.cc.s
 
 CMakeFiles/GaoBingFa.dir/user.cc.o.requires:
 
@@ -132,15 +132,15 @@ CMakeFiles/GaoBingFa.dir/user.cc.o.provides.build: CMakeFiles/GaoBingFa.dir/user
 CMakeFiles/GaoBingFa.dir/common/config.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/common/config.cc.o: ../common/config.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/GaoBingFa.dir/common/config.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/config.cc.o -c /home/tcy/gaobingfa/common/config.cc
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/config.cc.o -c /home/tcy/gaobingfa/common/config.cc
 
 CMakeFiles/GaoBingFa.dir/common/config.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GaoBingFa.dir/common/config.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/common/config.cc > CMakeFiles/GaoBingFa.dir/common/config.cc.i
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/common/config.cc > CMakeFiles/GaoBingFa.dir/common/config.cc.i
 
 CMakeFiles/GaoBingFa.dir/common/config.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GaoBingFa.dir/common/config.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/common/config.cc -o CMakeFiles/GaoBingFa.dir/common/config.cc.s
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/common/config.cc -o CMakeFiles/GaoBingFa.dir/common/config.cc.s
 
 CMakeFiles/GaoBingFa.dir/common/config.cc.o.requires:
 
@@ -156,15 +156,15 @@ CMakeFiles/GaoBingFa.dir/common/config.cc.o.provides.build: CMakeFiles/GaoBingFa
 CMakeFiles/GaoBingFa.dir/common/mutex.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/common/mutex.cc.o: ../common/mutex.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/GaoBingFa.dir/common/mutex.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/mutex.cc.o -c /home/tcy/gaobingfa/common/mutex.cc
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/mutex.cc.o -c /home/tcy/gaobingfa/common/mutex.cc
 
 CMakeFiles/GaoBingFa.dir/common/mutex.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GaoBingFa.dir/common/mutex.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/common/mutex.cc > CMakeFiles/GaoBingFa.dir/common/mutex.cc.i
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/common/mutex.cc > CMakeFiles/GaoBingFa.dir/common/mutex.cc.i
 
 CMakeFiles/GaoBingFa.dir/common/mutex.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GaoBingFa.dir/common/mutex.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/common/mutex.cc -o CMakeFiles/GaoBingFa.dir/common/mutex.cc.s
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/common/mutex.cc -o CMakeFiles/GaoBingFa.dir/common/mutex.cc.s
 
 CMakeFiles/GaoBingFa.dir/common/mutex.cc.o.requires:
 
@@ -180,15 +180,15 @@ CMakeFiles/GaoBingFa.dir/common/mutex.cc.o.provides.build: CMakeFiles/GaoBingFa.
 CMakeFiles/GaoBingFa.dir/common/sem.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/common/sem.cc.o: ../common/sem.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/GaoBingFa.dir/common/sem.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/sem.cc.o -c /home/tcy/gaobingfa/common/sem.cc
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/sem.cc.o -c /home/tcy/gaobingfa/common/sem.cc
 
 CMakeFiles/GaoBingFa.dir/common/sem.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GaoBingFa.dir/common/sem.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/common/sem.cc > CMakeFiles/GaoBingFa.dir/common/sem.cc.i
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/common/sem.cc > CMakeFiles/GaoBingFa.dir/common/sem.cc.i
 
 CMakeFiles/GaoBingFa.dir/common/sem.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GaoBingFa.dir/common/sem.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/common/sem.cc -o CMakeFiles/GaoBingFa.dir/common/sem.cc.s
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/common/sem.cc -o CMakeFiles/GaoBingFa.dir/common/sem.cc.s
 
 CMakeFiles/GaoBingFa.dir/common/sem.cc.o.requires:
 

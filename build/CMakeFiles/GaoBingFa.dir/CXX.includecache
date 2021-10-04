@@ -13,6 +13,8 @@ iostream
 -
 cstdio
 -
+assert.h
+../common/assert.h
 
 ../common/config.h
 map
@@ -53,6 +55,8 @@ iostream
 -
 cstdio
 -
+assert.h
+/home/tcy/gaobingfa/common/assert.h
 
 /home/tcy/gaobingfa/common/config.cc
 config.h
@@ -110,6 +114,16 @@ getopt.h
 memory
 -
 
+/home/tcy/gaobingfa/message.h
+message_header.h
+/home/tcy/gaobingfa/message_header.h
+common.h
+/home/tcy/gaobingfa/common.h
+
+/home/tcy/gaobingfa/message_header.h
+stddef.h
+-
+
 /home/tcy/gaobingfa/server.cc
 server.h
 /home/tcy/gaobingfa/server.h
@@ -126,8 +140,6 @@ unistd.h
 cstring
 -
 sys/epoll.h
--
-unistd.h
 -
 fcntl.h
 -
@@ -147,10 +159,16 @@ pthread_poll.h
 /home/tcy/gaobingfa/pthread_poll.h
 set
 -
+message_header.h
+/home/tcy/gaobingfa/message_header.h
 
 /home/tcy/gaobingfa/user.cc
 user.h
 /home/tcy/gaobingfa/user.h
+common.h
+/home/tcy/gaobingfa/common.h
+arpa/inet.h
+-
 
 /home/tcy/gaobingfa/user.h
 common.h
@@ -159,4 +177,8 @@ string
 -
 netinet/in.h
 -
+message_header.h
+/home/tcy/gaobingfa/message_header.h
+message.h
+/home/tcy/gaobingfa/message.h
 
