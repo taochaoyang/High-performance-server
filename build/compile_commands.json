@@ -16,6 +16,11 @@
 },
 {
   "directory": "/home/tcy/gaobingfa/build",
+  "command": "/usr/bin/x86_64-linux-gnu-g++-7   -I/home/tcy/gaobingfa/common  -g   -D _D -o CMakeFiles/GaoBingFa.dir/message.cc.o -c /home/tcy/gaobingfa/message.cc",
+  "file": "/home/tcy/gaobingfa/message.cc"
+},
+{
+  "directory": "/home/tcy/gaobingfa/build",
   "command": "/usr/bin/x86_64-linux-gnu-g++-7   -I/home/tcy/gaobingfa/common  -g   -D _D -o CMakeFiles/GaoBingFa.dir/common/config.cc.o -c /home/tcy/gaobingfa/common/config.cc",
   "file": "/home/tcy/gaobingfa/common/config.cc"
 },

@@ -114,6 +114,10 @@ getopt.h
 memory
 -
 
+/home/tcy/gaobingfa/message.cc
+message.h
+/home/tcy/gaobingfa/message.h
+
 /home/tcy/gaobingfa/message.h
 message_header.h
 /home/tcy/gaobingfa/message_header.h
@@ -121,7 +125,7 @@ common.h
 /home/tcy/gaobingfa/common.h
 
 /home/tcy/gaobingfa/message_header.h
-stddef.h
+inttypes.h
 -
 
 /home/tcy/gaobingfa/server.cc

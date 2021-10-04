@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/tcy/gaobingfa/common/mutex.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/common/mutex.cc.o"
   "/home/tcy/gaobingfa/common/sem.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/common/sem.cc.o"
   "/home/tcy/gaobingfa/main.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/main.cc.o"
+  "/home/tcy/gaobingfa/message.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/message.cc.o"
   "/home/tcy/gaobingfa/server.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/server.cc.o"
   "/home/tcy/gaobingfa/user.cc" "/home/tcy/gaobingfa/build/CMakeFiles/GaoBingFa.dir/user.cc.o"
   )

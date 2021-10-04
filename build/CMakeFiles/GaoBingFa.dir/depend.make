@@ -22,6 +22,12 @@ CMakeFiles/GaoBingFa.dir/main.cc.o: ../message_header.h
 CMakeFiles/GaoBingFa.dir/main.cc.o: ../server.h
 CMakeFiles/GaoBingFa.dir/main.cc.o: ../user.h
 
+CMakeFiles/GaoBingFa.dir/message.cc.o: ../common/common.h
+CMakeFiles/GaoBingFa.dir/message.cc.o: ../common/config.h
+CMakeFiles/GaoBingFa.dir/message.cc.o: ../message.cc
+CMakeFiles/GaoBingFa.dir/message.cc.o: ../message.h
+CMakeFiles/GaoBingFa.dir/message.cc.o: ../message_header.h
+
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../common/common.h
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../common/config.h
 CMakeFiles/GaoBingFa.dir/server.cc.o: ../common/mutex.h

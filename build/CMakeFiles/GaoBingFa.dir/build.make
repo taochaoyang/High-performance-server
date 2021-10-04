@@ -129,9 +129,33 @@ CMakeFiles/GaoBingFa.dir/user.cc.o.provides: CMakeFiles/GaoBingFa.dir/user.cc.o.
 CMakeFiles/GaoBingFa.dir/user.cc.o.provides.build: CMakeFiles/GaoBingFa.dir/user.cc.o
 
 
+CMakeFiles/GaoBingFa.dir/message.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
+CMakeFiles/GaoBingFa.dir/message.cc.o: ../message.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/GaoBingFa.dir/message.cc.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/message.cc.o -c /home/tcy/gaobingfa/message.cc
+
+CMakeFiles/GaoBingFa.dir/message.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/GaoBingFa.dir/message.cc.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tcy/gaobingfa/message.cc > CMakeFiles/GaoBingFa.dir/message.cc.i
+
+CMakeFiles/GaoBingFa.dir/message.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/GaoBingFa.dir/message.cc.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tcy/gaobingfa/message.cc -o CMakeFiles/GaoBingFa.dir/message.cc.s
+
+CMakeFiles/GaoBingFa.dir/message.cc.o.requires:
+
+.PHONY : CMakeFiles/GaoBingFa.dir/message.cc.o.requires
+
+CMakeFiles/GaoBingFa.dir/message.cc.o.provides: CMakeFiles/GaoBingFa.dir/message.cc.o.requires
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/message.cc.o.provides.build
+.PHONY : CMakeFiles/GaoBingFa.dir/message.cc.o.provides
+
+CMakeFiles/GaoBingFa.dir/message.cc.o.provides.build: CMakeFiles/GaoBingFa.dir/message.cc.o
+
+
 CMakeFiles/GaoBingFa.dir/common/config.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/common/config.cc.o: ../common/config.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/GaoBingFa.dir/common/config.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/GaoBingFa.dir/common/config.cc.o"
 	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/config.cc.o -c /home/tcy/gaobingfa/common/config.cc
 
 CMakeFiles/GaoBingFa.dir/common/config.cc.i: cmake_force
@@ -155,7 +179,7 @@ CMakeFiles/GaoBingFa.dir/common/config.cc.o.provides.build: CMakeFiles/GaoBingFa
 
 CMakeFiles/GaoBingFa.dir/common/mutex.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/common/mutex.cc.o: ../common/mutex.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/GaoBingFa.dir/common/mutex.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/GaoBingFa.dir/common/mutex.cc.o"
 	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/mutex.cc.o -c /home/tcy/gaobingfa/common/mutex.cc
 
 CMakeFiles/GaoBingFa.dir/common/mutex.cc.i: cmake_force
@@ -179,7 +203,7 @@ CMakeFiles/GaoBingFa.dir/common/mutex.cc.o.provides.build: CMakeFiles/GaoBingFa.
 
 CMakeFiles/GaoBingFa.dir/common/sem.cc.o: CMakeFiles/GaoBingFa.dir/flags.make
 CMakeFiles/GaoBingFa.dir/common/sem.cc.o: ../common/sem.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/GaoBingFa.dir/common/sem.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/GaoBingFa.dir/common/sem.cc.o"
 	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/GaoBingFa.dir/common/sem.cc.o -c /home/tcy/gaobingfa/common/sem.cc
 
 CMakeFiles/GaoBingFa.dir/common/sem.cc.i: cmake_force
@@ -206,6 +230,7 @@ GaoBingFa_OBJECTS = \
 "CMakeFiles/GaoBingFa.dir/main.cc.o" \
 "CMakeFiles/GaoBingFa.dir/server.cc.o" \
 "CMakeFiles/GaoBingFa.dir/user.cc.o" \
+"CMakeFiles/GaoBingFa.dir/message.cc.o" \
 "CMakeFiles/GaoBingFa.dir/common/config.cc.o" \
 "CMakeFiles/GaoBingFa.dir/common/mutex.cc.o" \
 "CMakeFiles/GaoBingFa.dir/common/sem.cc.o"
@@ -216,12 +241,13 @@ GaoBingFa_EXTERNAL_OBJECTS =
 GaoBingFa: CMakeFiles/GaoBingFa.dir/main.cc.o
 GaoBingFa: CMakeFiles/GaoBingFa.dir/server.cc.o
 GaoBingFa: CMakeFiles/GaoBingFa.dir/user.cc.o
+GaoBingFa: CMakeFiles/GaoBingFa.dir/message.cc.o
 GaoBingFa: CMakeFiles/GaoBingFa.dir/common/config.cc.o
 GaoBingFa: CMakeFiles/GaoBingFa.dir/common/mutex.cc.o
 GaoBingFa: CMakeFiles/GaoBingFa.dir/common/sem.cc.o
 GaoBingFa: CMakeFiles/GaoBingFa.dir/build.make
 GaoBingFa: CMakeFiles/GaoBingFa.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable GaoBingFa"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/tcy/gaobingfa/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable GaoBingFa"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/GaoBingFa.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -232,6 +258,7 @@ CMakeFiles/GaoBingFa.dir/build: GaoBingFa
 CMakeFiles/GaoBingFa.dir/requires: CMakeFiles/GaoBingFa.dir/main.cc.o.requires
 CMakeFiles/GaoBingFa.dir/requires: CMakeFiles/GaoBingFa.dir/server.cc.o.requires
 CMakeFiles/GaoBingFa.dir/requires: CMakeFiles/GaoBingFa.dir/user.cc.o.requires
+CMakeFiles/GaoBingFa.dir/requires: CMakeFiles/GaoBingFa.dir/message.cc.o.requires
 CMakeFiles/GaoBingFa.dir/requires: CMakeFiles/GaoBingFa.dir/common/config.cc.o.requires
 CMakeFiles/GaoBingFa.dir/requires: CMakeFiles/GaoBingFa.dir/common/mutex.cc.o.requires
 CMakeFiles/GaoBingFa.dir/requires: CMakeFiles/GaoBingFa.dir/common/sem.cc.o.requires

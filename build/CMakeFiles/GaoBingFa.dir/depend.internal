@@ -22,6 +22,12 @@ CMakeFiles/GaoBingFa.dir/main.cc.o
  /home/tcy/gaobingfa/message_header.h
  /home/tcy/gaobingfa/server.h
  /home/tcy/gaobingfa/user.h
+CMakeFiles/GaoBingFa.dir/message.cc.o
+ ../common/common.h
+ ../common/config.h
+ /home/tcy/gaobingfa/message.cc
+ /home/tcy/gaobingfa/message.h
+ /home/tcy/gaobingfa/message_header.h
 CMakeFiles/GaoBingFa.dir/server.cc.o
  ../common/common.h
  ../common/config.h

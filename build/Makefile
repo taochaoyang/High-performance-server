@@ -231,6 +231,33 @@ main.cc.s:
 	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/main.cc.s
 .PHONY : main.cc.s
 
+message.o: message.cc.o
+
+.PHONY : message.o
+
+# target to build an object file
+message.cc.o:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/message.cc.o
+.PHONY : message.cc.o
+
+message.i: message.cc.i
+
+.PHONY : message.i
+
+# target to preprocess a source file
+message.cc.i:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/message.cc.i
+.PHONY : message.cc.i
+
+message.s: message.cc.s
+
+.PHONY : message.s
+
+# target to generate assembly for a file
+message.cc.s:
+	$(MAKE) -f CMakeFiles/GaoBingFa.dir/build.make CMakeFiles/GaoBingFa.dir/message.cc.s
+.PHONY : message.cc.s
+
 server.o: server.cc.o
 
 .PHONY : server.o
@@ -306,6 +333,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... message.o"
+	@echo "... message.i"
+	@echo "... message.s"
 	@echo "... server.o"
 	@echo "... server.i"
 	@echo "... server.s"
