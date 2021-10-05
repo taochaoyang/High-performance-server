@@ -8,7 +8,6 @@
 #include <unistd.h>
 #include <cstring>
 #include <sys/epoll.h>
-#include <unistd.h>
 #include <fcntl.h>
 
 
@@ -41,8 +40,10 @@ void server::init_server(int port) {
     }
     auto &config = config::get_config_ptr()->config_;
     
-    max_online_user = atoi(config["max_online_user"].c_str());
-    pthread_rwlock_init(&rwlock, NULL);
+    max_online_user_ = atoi(config["max_online_user_"].c_str());
+    max_sockfd_ = max_online_user_ + 3;
+    pr_users_ = new user[max_sockfd_];
+    DBG("max_sockfd_: %d ", max_sockfd_);
 
     try
     {
@@ -82,63 +83,85 @@ void server::init_ptr() {
     server_ptr_.reset(new server());
 }
 
+void server::heartbeat() {
+
+}
+
+void server::send_ack(const int ack, int client_fd) {
+    if (send(client_fd, &ack, sizeof(ack), 0) < 0) {
+        perror("send");
+        exit(1);
+    }
+}
+
 void server::do_verify_token() {
     const int epollfd = epoll_create(1);
 
-    // add the read_pipe to the epoll
+    // add the read_pipe1 to the epoll
     struct epoll_event ev;
     ev.events = EPOLLIN;
-    ev.data.fd = read_pipe;
-    if (epoll_ctl(epollfd, EPOLL_CTL_ADD, read_pipe, &ev) < 0) {
+    ev.data.fd = read_pipe1;
+    if (epoll_ctl(epollfd, EPOLL_CTL_ADD, read_pipe1, &ev) < 0) {
         perror("eoill_ctr");
         exit(errno);
     }
 
-    struct epoll_event events[max_online_user];
-    while(1) {
-        DBG("in epoll_wait");
-        const int nfds = epoll_wait(epollfd, events, max_online_user, -1);
-        DBG("out epoll_wait");
+    struct epoll_event events[max_sockfd_];
+    for(;;) {
+        DBGIN(" epoll_wait");
+        const int nfds = epoll_wait(epollfd, events, max_sockfd_, -1);
+        DBGOUT(" epoll_wait");
         if (nfds == -1) {
             perror("epoll_wait");
             exit(errno);
         }
         for (int i = 0; i < nfds; i++) {
-            if (events[i].data.fd == read_pipe) {
-                DBG("in read_pipe");
+            if (events[i].data.fd == read_pipe1) {
+                DBGIN(" read_pipe1");
                 int new_client_fd;
-                while (read(read_pipe, &new_client_fd,
+                while (read(read_pipe1, &new_client_fd,
                             sizeof(new_client_fd)) > 0) {
                     DBG("new_client_fd = %d", new_client_fd);
                     ev.data.fd = new_client_fd;
-                    DBG("in epoll_ctl");
                     if (epoll_ctl(epollfd, EPOLL_CTL_ADD,
                                     new_client_fd, &ev) < 0) {
                         perror("epoll_ctr");
                         exit(errno);
                     }
-                    DBG("out epoll_ctl");
                 }
-                DBG("out read_pipe");
+                DBGOUT(" read_pipe1");
             } else {
-                DBG("in verify user");
-                // verify user with token_tmp
-                char token_tmp[100];
+                DBGIN(" verify user");
                 const int new_client_fd = events[i].data.fd;
-                epoll_ctl(epollfd, EPOLL_CTL_DEL, new_client_fd, NULL);
-                if ((recv(new_client_fd, token_tmp, sizeof(token_tmp), 0)) <= 0) {
-                    close(new_client_fd);
-                    std::cout << "New sockfd ["<< server_listen_fd_ << "] connection error!" << std::endl;
-                } else if (strcmp(token_tmp,
-                        config::get_config_ptr()->config_["token"].c_str()) <= 0) {
-                    close(new_client_fd);
-                    std::cout << "New sockfd ["<< server_listen_fd_ << "] failed the verification!" << std::endl;
-                    continue;
-                } else {
+                epoll_ctl(epollfd, EPOLL_CTL_DEL, new_client_fd, NULL);                
 
-                    std::cout << "New sockfd ["<< server_listen_fd_ << "] passed the verification!" << std::endl;
+                // verify user with token_tmp
+                const string token = config::get_config_ptr()->config_["token"];
+                char token_tmp[token.size() + 1] = {};
+                const int re = recv(new_client_fd, token_tmp, token.size(), 0);
+                DBG("token: %s, token_tmp: %s len= %zu", token.c_str(), token_tmp, token.length());
+                if (re <= 0) {
+                    close(new_client_fd);
+                    std::cout << "New sockfd ["<< new_client_fd << "] connection error!" << std::endl;
+                    continue;
                 }
-                DBG("out verify user");
+                if (token_tmp != token) {
+                    std::cout << "New sockfd ["<< new_client_fd << "] failed the verification!" << std::endl;
+                    send_ack(0, new_client_fd);
+                    close(new_client_fd);
+                    continue;
+                }
+                DBG("else");
+                if (write(write_pipe2, &new_client_fd, sizeof(new_client_fd)) < 0) {
+                    send_ack(0, new_client_fd);
+                    perror("write");
+                    exit(1);
+                }
+                send_ack(1, new_client_fd);
+
+                std::cout << "New sockfd ["<< new_client_fd << "] passed the verification!" << std::endl;
+                
+                DBGOUT(" verify user");
             }
         }
     }
@@ -147,57 +170,241 @@ void server::do_verify_token() {
 // 1. Communicat with do_verify_token() by pipe.see: https://www.javaroad.cn/questions/47889
 //    do_login() would add one client_sockfd to pipe once one client_sockfd is created.
 void server::do_login() {
+    DBGIN("do_login");
+
+    DBGOUT("do_login");
     while(1) {
-        DBG("in do_login");
-        int new_client_fd = accept(server_listen_fd_, NULL, NULL);
-        printf("New sockfd %d try to connect.\n", server_listen_fd_);
+        DBGIN(" do_login");
+        struct sockaddr_in client_address;
+        socklen_t len = sizeof(client_address);
+        int new_client_fd = accept(server_listen_fd_, (struct sockaddr *)&client_address, &len);
+        printf("New sockfd %d try to connect.\n", new_client_fd);
 
         if (new_client_fd < 0) {
             perror("accept");
             exit(errno);
         }
+        if (new_client_fd >= max_sockfd_) {
+            printf("new_client_fd[%d] over max_sockfd_[%d]", new_client_fd, max_sockfd_);
+            close(new_client_fd);
+            continue;
+        }
+        DBG("123");
+    //         for (int i = 0; i < max_sockfd_; i++) {
+    //     pr_users_[i].print();
+    // }
+        DBG("max_sockfd = %d", max_sockfd_);
 
-        write(write_pipe, &new_client_fd, sizeof(new_client_fd));
 
-        // Use pthread_rwlock_wlock to protect the pthread safety.
-        // pthread_rwlock_wrlock(&rwlock);
+        pr_users_[new_client_fd].print();
+        // pr_users_[new_client_fd] = move(user(new_client_fd, client_address));
+        pr_users_[new_client_fd].sockfd_ = new_client_fd;
+        pr_users_[new_client_fd].addr_ = client_address;
+        pr_users_[new_client_fd].print();
+
+
+        DBG("456");
+        if (write(write_pipe1, &new_client_fd, sizeof(new_client_fd)) < 0) {
+            perror("write");
+            exit(1);
+        }
+        DBG("789");
+
+        // Use pthread_rwlock__wlock to protect the pthread safety.
+        // pthread_rwlock__wrlock(&rwlock_);
         // waiting_verify_token_sockfd_set_.insert(new_client_fd);
-        // pthread_rwlock_unlock(&rwlock);
-
+        // pthread_rwlock__unlock(&rwlock_);
 
     }
 }
 
-void server::init_pipe() {
-    int pipefds[2] = {};
-    pipe(pipefds);
-    read_pipe = pipefds[0];
-    write_pipe = pipefds[1];
+bool server::read_message_head(int client_fd) {
+    DBGIN(" read_message_head");
 
-    // make read-end non-blocking
-    if (fcntl(read_pipe, F_SETFL, O_NONBLOCK) != 0) {
+    user &ref_user = pr_users_[client_fd];
+    auto &message = ref_user.message_;
+
+    int n_len = recv(client_fd, &message.header_ + message.header_index_,
+                    sizeof(message.header_) - message.header_index_, 0);
+    if (n_len <= 0) {
+        return false;
+    }
+    
+    message.header_index_ += n_len;
+    DBG("sockfd[%d] message:header={{content_length_=%d, type_=%d}, index=%d}",
+        client_fd,
+        message.header_.content_length_, message.header_.type_, message.header_index_);
+    if (message.header_index_ < sizeof(message.header_)) {
+        DBG("still need read_message_head.");
+    } else {
+        DBG("change to read_message_content.");
+        message.header_index_ = 0;
+        message.check_state_ = message::CHECK_STATE_CONTENT;
+    }
+
+    return true;
+}
+
+bool server::read_message_content(int client_fd) {
+    DBGIN(" read_message_content");
+    user &ref_user = pr_users_[client_fd];
+    auto &message = ref_user.message_;
+    const int content_length_ = message.header_.content_length_;
+    if (message.content_pr_ == nullptr) {
+        if (content_length_ > MAX_CONTENT_LENGTH) {
+            const char *buff = "content_length_ over MAX_CONTENT_LENGTH!Close the connection.";
+            send(client_fd, buff, sizeof(buff), 0);
+            return false;
+        }
+        message.content_pr_ = new char[content_length_ + 1];
+        DBG("new message.content,length = %zu", strlen(message.content_pr_));
+    }
+
+    int n_len = recv(client_fd, message.content_pr_ + message.content_index_,
+                    content_length_ - message.content_index_, 0);
+    if (n_len <= 0) {
+        return false;
+    }
+    DBG("sock[%d] says: %s", client_fd, message.content_pr_ + message.content_index_);
+
+    DBG("sockfd[%d] message:header_={{content_length_=%d, type_=%d}, index_=%d},content_={%s,%d}",
+        client_fd,
+        message.header_.content_length_, message.header_.type_, message.header_index_,
+        message.content_pr_, message.content_index_);
+    message.content_index_ += n_len;
+    if (message.content_index_ < content_length_) {
+        DBG("still need read_message_content.");
+    } else {        
+        DBG("change to read_message_head.");
+        delete(message.content_pr_);
+        message.content_pr_ = nullptr;
+        message.content_index_ = 0;
+        message.check_state_ = message::CHECK_STATE_HEADER;
+    }
+
+    return true;
+}
+
+void server::do_reactor() {
+    const int epollfd = epoll_create(1);
+    struct epoll_event ev;
+    ev.events = EPOLLIN;
+    ev.data.fd = read_pipe2;
+    if (epoll_ctl(epollfd, EPOLL_CTL_ADD, read_pipe2, &ev) < 0) {
+        perror("eoill_ctr");
+        exit(errno);
+    }
+
+    struct epoll_event events[max_sockfd_];
+    for (;;) {
+        DBGIN(" epoll_wait");
+        const int nfds = epoll_wait(epollfd, events, max_sockfd_, -1);
+        DBGOUT(" epoll_wait");
+        if (nfds == -1) {
+            perror("epoll_wait");
+            exit(errno);
+        }
+        for (int i = 0; i < nfds; i++) {
+            if (events[i].data.fd == read_pipe2) {
+                DBGIN(" read_pipe2");
+                int client_fd;
+                while (read(read_pipe2, &client_fd,
+                            sizeof(client_fd)) > 0) {
+                    DBG("client_fd = %d", client_fd);
+                    ev.data.fd = client_fd;
+                    if (epoll_ctl(epollfd, EPOLL_CTL_ADD,
+                                    client_fd, &ev) < 0) {
+                        perror("epoll_ctr");
+                        exit(errno);
+                    }
+                    const user &mid_user= pr_users_[client_fd];
+                    DBG("sockfd[%d] ip[%s]", mid_user.sockfd_, inet_ntoa(mid_user.addr_.sin_addr));
+                }
+                DBGOUT(" read_pipe2");
+            } else {
+                DBGIN(" read message");
+                const int client_fd = events[i].data.fd;
+                const user &mid_user = pr_users_[client_fd];
+                if (mid_user.message_.check_state_ == message::CHECK_STATE_HEADER) {
+                    DBG("CHECK_STATE_HEADER");
+                    if (read_message_head(client_fd) == false) {
+                        printf("sockfd[%d] closed connection.\n", client_fd);
+                        epoll_ctl(epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
+                        close(client_fd);
+                    }
+                } else if (mid_user.message_.check_state_ == message::CHECK_STATE_CONTENT) {
+                    DBG("CHECK_STATE_CONTENT");
+                    if (read_message_content(client_fd) == false) {
+                        printf("sockfd[%d] closed connection.\n", client_fd);
+                        epoll_ctl(epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
+                        close(client_fd);
+                    }
+                }
+                DBGOUT(" read message_");
+            }
+        }
+    }
+}
+
+void server::make_nonblock(int fd) {
+    int flags = fcntl(fd, F_GETFL);
+    if (flags < 0) {
+        perror("fcntl");
+        exit(errno);
+    }
+    if (fcntl(fd, F_SETFL, O_NONBLOCK | flags) != 0) {
         perror("fcntl");
         exit(errno);
     }
 }
 
+void server::init_pipe() {
+    int pipefds1[2] = {};
+    if (pipe(pipefds1) < 0) {
+        perror("pipe");
+        exit(1);
+    }
+    read_pipe1 = pipefds1[0];
+    write_pipe1 = pipefds1[1];
+    int pipefds2[2] = {};
+    if (pipe(pipefds2) < 0) {
+        perror("pipe");
+        exit(1);
+    }    read_pipe2 = pipefds2[0];
+    write_pipe2 = pipefds2[1];   
+
+    make_nonblock(read_pipe1);
+    make_nonblock(write_pipe1);
+    make_nonblock(read_pipe2);
+    make_nonblock(write_pipe2);
+}
+
 void *server::call_back(void *arg) {
     server::call_back_arg_struc *p_node = (server::call_back_arg_struc*)arg;
-    auto obj = p_node->obj;
+    auto pr_obj = p_node->pr_obj;
     auto func = p_node->func;
-    (obj.*func)();
+    (pr_obj->*func)();
     delete p_node;
 }
 
 void server::start_listen_conn() {
     init_pipe();
 
-    call_back_arg_struc *login_tid_struc = new call_back_arg_struc{*this, &server::do_login};
-    call_back_arg_struc *verify_token_tid_struc = new call_back_arg_struc{*this, &server::do_verify_token};
+    // main reactor
+    call_back_arg_struc *login_tid_struc = new call_back_arg_struc{this, &server::do_login};
+
+    // sub reactor
+    call_back_arg_struc *verify_token_tid_struc = new call_back_arg_struc{this, &server::do_verify_token};
+    call_back_arg_struc *reactor_struc = new call_back_arg_struc{this, &server::do_reactor};
+
 
     pthread_create(&login_tid, nullptr, call_back, login_tid_struc);
+
     pthread_create(&verify_token_tid, nullptr, call_back, verify_token_tid_struc);
+    pthread_create(&reactor_tid, nullptr, call_back, reactor_struc);
+
 
     pthread_join(login_tid, nullptr);
     pthread_join(verify_token_tid, nullptr);
+    pthread_join(reactor_tid, nullptr);
 }

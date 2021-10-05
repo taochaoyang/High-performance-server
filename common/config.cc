@@ -87,7 +87,7 @@ bool config::judge_config() {
     // server.cc
     nece_strs.push_back("max_conn_waiting_num");
     nece_strs.push_back("token");
-    nece_strs.push_back("max_online_user");
+    nece_strs.push_back("max_online_user_");
 
     for (auto key : nece_strs) {
          if (!config_.count(key)) {

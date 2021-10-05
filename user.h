@@ -10,12 +10,22 @@
 
 #include "common.h"
 #include <string>
+#include <netinet/in.h>
+#include "message_header.h"
+#include "message.h"
 
 struct user{
+
 public:
     user();
 
-    ~user() = default;
+    user(int sockfd, struct sockaddr_in addr);
+    
+    user& operator=(user &&other);
+
+    ~user();
+
+    void print();
 
     friend class server;
 
@@ -24,7 +34,12 @@ private:
 
     int sockfd_;
 
-    int headtbeat_count_;
+    int heartbeat_count_;
+
+    struct sockaddr_in addr_;
+
+    message message_;
+
 };
 
 

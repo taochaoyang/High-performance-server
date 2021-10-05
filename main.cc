@@ -27,9 +27,8 @@ void run(int port) {
 
 int main(int argc, char **argv) {
     //google::InitGoogleLogging("HelenXR_glog_program");
-    //LOG(INFO) << "google log first info level message!";
+    //LOG(INFO) << "google log first info level message_header!";
     DBG("argc: %d\n", argc);
-    printf("6666666666\n");
     int port = -1;
     int opt;
     while ((opt = getopt(argc, argv, "p:")) != -1) {

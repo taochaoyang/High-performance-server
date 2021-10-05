@@ -13,7 +13,10 @@
 #include <map>
 #include "user.h"
 #include <pthread.h>
+#include "pthread_poll.h"
 #include <set>
+#include "message_header.h"
+
 
 // Simple interest model.
 
@@ -21,11 +24,11 @@
 class server {
 
 public:
-    // typedef void (server::*type_do_login)(void);
-	using type_do_login = void (server::*)(void);
+    // typedef void (server::*type_func)(void);
+	using type_func = void (server::*)(void);
     struct call_back_arg_struc{
-        server &obj;
-        server::type_do_login func;
+        server *pr_obj;
+        server::type_func func;
     };
 
 	static server *get_ptr();
@@ -40,14 +43,26 @@ public:
 
 	void do_login();
 
-	void heart();
+	void do_reactor();
 
 	~server() = default;
+
+	void make_nonblock(int fd);
 
 private:
 	void init_pipe();
 
 	static void *call_back(void *);
+
+	void heartbeat();
+
+	void send_ack(const int ack, const int client_fd);
+
+	enum MESSAGE_STATE{MESSAGE_COMPLETE, MESSAGE_ERROR, MESSAGE_OPEN};
+	bool read_message_head(int client_fd);
+
+	bool read_message_content(int client_fd);
+
 protected:
 	server(int port);
 	
@@ -58,22 +73,29 @@ protected:
 private:
     static std::shared_ptr<server> server_ptr_;
 
-	std::set<int> waiting_verify_token_sockfd_set_;
-
-	// sockfd->user
-	std::map<int, user> users_;
+	user *pr_users_;
 
 	int server_listen_fd_;
 	
 	int max_conn_waiting_num_;
 
-	int max_online_user;
+	int max_online_user_;
 
-	pthread_rwlock_t rwlock;
-	int read_pipe;
-	int write_pipe;
+	int max_sockfd_;
+
     pthread_t login_tid;
+	int read_pipe1;
+	int write_pipe1;
 	pthread_t verify_token_tid;
+	int read_pipe2;
+	int write_pipe2;
+	pthread_t reactor_tid;
+
+	pthread_pool<message_header> threadpool_;
+
+
 };
+
+
 
 #endif

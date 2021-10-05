@@ -13,6 +13,7 @@
 #include "config.h"
 #include <iostream>
 #include <cstdio>
+#include "assert.h" 
 
 
 using namespace std;
@@ -32,11 +33,17 @@ using namespace std;
 // For debug. 
 #define BLUE "\033[0;32;34m"
 
+#define CYAN "\033[0;31m"
+
 // Define macro "_D" to enable debug mode.
 #ifdef _D
 	#ifndef DBG
 		#define DBG(fmt, args...) \
-		printf(BLUE fmt NONE "\n", ##args);
+		printf(BLUE "File: %s, Line: %d, Function: %s : " NONE YELLOW fmt NONE "\n", __FILE__, __LINE__ , __FUNCTION__,##args);
+		#define DBGIN(fmt, args...) \
+		printf(BLUE "File: %s, Line: %d, Function: %s : " NONE GREEN fmt NONE "\n", __FILE__, __LINE__ , __FUNCTION__,##args);
+		#define DBGOUT(fmt, args...) \
+		printf(BLUE "File: %s, Line: %d, Function: %s : " NONE CYAN fmt NONE "\n", __FILE__, __LINE__ , __FUNCTION__,##args);
 	#endif
 #else
 	#ifndef DBG
