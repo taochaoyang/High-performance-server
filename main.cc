@@ -13,6 +13,7 @@
 #include <getopt.h>
 #include <memory>
 
+const int six = 666;
 
 void run(int port) {
     DBG("run\n");

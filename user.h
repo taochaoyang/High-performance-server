@@ -30,7 +30,8 @@ public:
     friend class server;
 
 private:
-    std::string name_;
+    //std::string name_;
+    const char *name_;
 
     int sockfd_;
 

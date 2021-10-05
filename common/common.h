@@ -41,9 +41,11 @@ using namespace std;
 		#define DBG(fmt, args...) \
 		printf(BLUE "File: %s, Line: %d, Function: %s : " NONE YELLOW fmt NONE "\n", __FILE__, __LINE__ , __FUNCTION__,##args);
 		#define DBGIN(fmt, args...) \
-		printf(BLUE "File: %s, Line: %d, Function: %s : " NONE GREEN fmt NONE "\n", __FILE__, __LINE__ , __FUNCTION__,##args);
+		printf(RED "File: %s, Line: %d, Function: %s : " NONE GREEN fmt NONE "\n", __FILE__, __LINE__ , __FUNCTION__,##args);
 		#define DBGOUT(fmt, args...) \
 		printf(BLUE "File: %s, Line: %d, Function: %s : " NONE CYAN fmt NONE "\n", __FILE__, __LINE__ , __FUNCTION__,##args);
+		#define CUT(fmt, args...) \
+		printf(RED "File: %s, Line: %d, Function: %s : -------------------------------------------------------" NONE fmt NONE "\n", __FILE__, __LINE__ , __FUNCTION__,##args);	
 	#endif
 #else
 	#ifndef DBG

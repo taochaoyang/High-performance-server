@@ -19,6 +19,9 @@ public:
 
     void print();
 
+    // Prevent memory leaks.
+    void reset_content();
+
 friend class server;
 
 private:

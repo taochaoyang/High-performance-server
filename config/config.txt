@@ -11,4 +11,4 @@ max_conn_waiting_num 20
 token 666
 
 # 
-max_online_user_ 50
+max_online_user_ 20

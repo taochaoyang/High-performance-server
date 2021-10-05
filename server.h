@@ -49,6 +49,7 @@ public:
 
 	void make_nonblock(int fd);
 
+	void test();
 private:
 	void init_pipe();
 
