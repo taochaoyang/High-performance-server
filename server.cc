@@ -88,6 +88,7 @@ void server::heartbeat() {
 }
 
 void server::send_ack(const int ack, int client_fd) {
+    return;
     if (send(client_fd, &ack, sizeof(ack), 0) < 0) {
         perror("send");
         exit(1);
@@ -137,9 +138,12 @@ void server::do_verify_token() {
 
                 // verify user with token_tmp
                 const string token = config::get_config_ptr()->config_["token"];
-                char token_tmp[token.size() + 1] = {};
-                const int re = recv(new_client_fd, token_tmp, token.size(), 0);
-                DBG("token: %s, token_tmp: %s len= %zu", token.c_str(), token_tmp, token.length());
+                // char token_tmp[token.size() + 1] = {};
+                //const int re = recv(new_client_fd, token_tmp, token.size(), 0);
+                const int re = 1;
+                const string token_tmp = token;
+
+                //DBG("token: %s, token_tmp: %s len= %zu", token.c_str(), token_tmp, token.length());
                 if (re <= 0) {
                     close(new_client_fd);
                     std::cout << "New sockfd ["<< new_client_fd << "] connection error!" << std::endl;
@@ -170,7 +174,7 @@ void server::do_verify_token() {
 // 1. Communicat with do_verify_token() by pipe.see: https://www.javaroad.cn/questions/47889
 //    do_login() would add one client_sockfd to pipe once one client_sockfd is created.
 void server::do_login() {
-    while(1) {        CUT("");
+    while(1) {
         DBGIN(" do_login");
         struct sockaddr_in client_address;
         socklen_t len = sizeof(client_address);
@@ -188,18 +192,15 @@ void server::do_login() {
         }
 
         pr_users_[new_client_fd].print();
-        // pr_users_[new_client_fd] = move(user(new_client_fd, client_address));
-        pr_users_[new_client_fd].sockfd_ = new_client_fd;
-        pr_users_[new_client_fd].addr_ = client_address;
+        pr_users_[new_client_fd] = move(user(new_client_fd, client_address));
+        // pr_users_[new_client_fd].sockfd_ = new_client_fd;
+        // pr_users_[new_client_fd].addr_ = client_address;
         pr_users_[new_client_fd].print();
 
-
-        DBGOUT("456");
         if (write(write_pipe1, &new_client_fd, sizeof(new_client_fd)) < 0) {
             perror("write");
             exit(1);
         }
-        DBGOUT("789");
         // Use pthread_rwlock__wlock to protect the pthread safety.
         // pthread_rwlock__wrlock(&rwlock_);
         // waiting_verify_token_sockfd_set_.insert(new_client_fd);
@@ -208,15 +209,15 @@ void server::do_login() {
 }
 
 void server::test() {
-    for (int ii = 7, flag = 0; ii < 20; ii++ ) {
-        if (pr_users_[ii].sockfd_ != -1) {
-            flag = ii;
-        }
-        if (flag) {
-            DBG("sockfd = %d", ii);
-            pr_users_[ii].print();
-        }
-    }
+    // for (int ii = 7, flag = 0; ii < 20; ii++ ) {
+    //     if (pr_users_[ii].sockfd_ != -1) {
+    //         flag = ii;
+    //     }
+    //     if (flag) {
+    //         DBG("sockfd = %d", ii);
+    //         pr_users_[ii].print();
+    //     }
+    // }
 }
 
 bool server::read_message_head(int client_fd) {
@@ -265,7 +266,7 @@ bool server::read_message_content(int client_fd) {
     if (message.content_index_ == 0) {
         if (content_length_ > MAX_CONTENT_LENGTH) {
             const char *buff = "content_length_ over MAX_CONTENT_LENGTH!Close the connection.";
-            send(client_fd, buff, sizeof(buff), 0);
+            send(client_fd, buff, strlen(buff), 0);
             message.reset_content();
             return false;
         }
@@ -275,14 +276,34 @@ bool server::read_message_content(int client_fd) {
         message.content_pr_ = new char[content_length_ + 1];
         DBG("new message.content,and the length = %d", content_length_ + 1);
     }
-
     int n_len = recv(client_fd, message.content_pr_ + message.content_index_,
-                    content_length_ - message.content_index_, 0);
+                    content_length_ - message.content_index_, 0);DBG();
     if (n_len <= 0) {
         message.reset_content();
         return false;
+    }    
+    // DBGIN("sock[%d] says: %s", client_fd, message.content_pr_ + message.content_index_);
+
+    int n_flag = -1;
+    char *pr = message.content_pr_;
+    for (int i = message.content_index_ + n_len - 1; i >= message.content_index_; i--) {
+        if (pr[i] >= 'A' && pr[i] <= 'Z') {
+            pr[i] -= 'A' - 'a';
+        } else if (pr[i] >= 'a' && pr[i] <= 'z') {
+            pr[i] -= 'a' - 'A';
+        }        
+        if (n_flag == -1 && pr[i] == '\n') {
+            n_flag = i + 1;
+        }
     }
-    DBG("sock[%d] says: %s", client_fd, message.content_pr_ + message.content_index_);
+    if (n_flag != -1) {
+        send(client_fd, pr, n_flag, 0);
+        for (int i =  n_flag; i < message.content_index_ + n_len; i++) {
+            pr[i - n_flag] = pr[i];
+        }        
+        message.content_index_ += n_len - n_flag;
+        return true;
+    }
 
     // DBG("sockfd[%d] message:header_={{content_length_=%d, type_=%d}, index_=%d},content_={%s,%d}",
     //     client_fd,
@@ -340,7 +361,10 @@ void server::do_reactor() {
             } else {
                 DBGIN(" read message");
                 const int client_fd = events[i].data.fd;
-                const user &mid_user = pr_users_[client_fd];
+                user &mid_user = pr_users_[client_fd];
+                mid_user.message_.check_state_ = message::CHECK_STATE_CONTENT;
+                mid_user.message_.header_.content_length_ = 4099*2;
+
                 if (mid_user.message_.check_state_ == message::CHECK_STATE_HEADER) {
                     DBG("CHECK_STATE_HEADER");
                     if (read_message_head(client_fd) == false) {

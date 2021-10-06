@@ -50,6 +50,9 @@ using namespace std;
 #else
 	#ifndef DBG
 		#define DBG(fmt, args...)
+		#define DBGIN(fmt, args...) 
+		#define DBGOUT(fmt, args...) 
+		#define CUT(fmt, args...) 
 	#endif
 #endif
 

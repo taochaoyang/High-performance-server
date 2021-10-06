@@ -11,7 +11,7 @@ struct message_header {
     uint32_t content_length_;
     uint32_t type_;
 };
-#define MAX_CONTENT_LENGTH 4096
+#define MAX_CONTENT_LENGTH 4096*4
 
 
 
