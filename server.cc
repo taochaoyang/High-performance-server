@@ -161,8 +161,7 @@ void server::do_verify_token() {
 
                 std::cout << "New sockfd ["<< new_client_fd << "] passed the verification!" << std::endl;
                 
-                DBGOUT(" verify user");        return;
-
+                DBGOUT(" verify user");
             }
         }
     }
@@ -187,8 +186,6 @@ void server::do_login() {
             close(new_client_fd);
             continue;
         }
-        DBG("in fuzhi6666666666666666666666666666666666666");
-
 
         pr_users_[new_client_fd].print();
         // pr_users_[new_client_fd] = move(user(new_client_fd, client_address));
@@ -203,7 +200,6 @@ void server::do_login() {
             exit(1);
         }
         DBGOUT("789");
-return;
         // Use pthread_rwlock__wlock to protect the pthread safety.
         // pthread_rwlock__wrlock(&rwlock_);
         // waiting_verify_token_sockfd_set_.insert(new_client_fd);
@@ -212,25 +208,13 @@ return;
 }
 
 void server::test() {
-    // for (int ii = 7, flag = 0; ii < 20; ii++ ) {
-    //     if (pr_users_[ii].sockfd_ != -1) {
-    //         flag = ii;
-    //     }
-    //     if (flag) {
-    //         pr_users_[ii].print();
-    //         if (ii - flag == 1) {
-    //             break;
-    //         }
-    //     }
-    // }
     for (int ii = 7, flag = 0; ii < 20; ii++ ) {
         if (pr_users_[ii].sockfd_ != -1) {
             flag = ii;
         }
-        if (ii - flag == 1) {
+        if (flag) {
             DBG("sockfd = %d", ii);
             pr_users_[ii].print();
-            break;
         }
     }
 }
@@ -239,6 +223,7 @@ bool server::read_message_head(int client_fd) {
     DBGIN(" read_message_head");
     user &ref_user = pr_users_[client_fd];
     auto &message = ref_user.message_;
+    auto &next_user = pr_users_[client_fd + 1];
     test();
     // sleep(1);
     const int header_length = sizeof(message.header_);
