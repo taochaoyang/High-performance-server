@@ -92,7 +92,7 @@ private:
 	int write_pipe2;
 	pthread_t reactor_tid;
 
-	pthread_pool<message_header> threadpool_;
+	pthread_pool<user> threadpool_;
 
 
 };

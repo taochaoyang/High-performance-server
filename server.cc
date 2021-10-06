@@ -161,8 +161,7 @@ void server::do_verify_token() {
 
                 std::cout << "New sockfd ["<< new_client_fd << "] passed the verification!" << std::endl;
                 
-                DBGOUT(" verify user");        return;
-
+                DBGOUT(" verify user");
             }
         }
     }
@@ -171,7 +170,7 @@ void server::do_verify_token() {
 // 1. Communicat with do_verify_token() by pipe.see: https://www.javaroad.cn/questions/47889
 //    do_login() would add one client_sockfd to pipe once one client_sockfd is created.
 void server::do_login() {
-    while(1) {        CUT("");
+    while(1) {
         DBGIN(" do_login");
         struct sockaddr_in client_address;
         socklen_t len = sizeof(client_address);
@@ -187,50 +186,26 @@ void server::do_login() {
             close(new_client_fd);
             continue;
         }
-        DBG("in fuzhi6666666666666666666666666666666666666");
 
-
-        pr_users_[new_client_fd].print();
         // pr_users_[new_client_fd] = move(user(new_client_fd, client_address));
         pr_users_[new_client_fd].sockfd_ = new_client_fd;
         pr_users_[new_client_fd].addr_ = client_address;
-        pr_users_[new_client_fd].print();
 
-
-        DBGOUT("456");
         if (write(write_pipe1, &new_client_fd, sizeof(new_client_fd)) < 0) {
             perror("write");
             exit(1);
         }
-        DBGOUT("789");
-return;
-        // Use pthread_rwlock__wlock to protect the pthread safety.
-        // pthread_rwlock__wrlock(&rwlock_);
-        // waiting_verify_token_sockfd_set_.insert(new_client_fd);
-        // pthread_rwlock__unlock(&rwlock_);
     }
 }
 
 void server::test() {
-    // for (int ii = 7, flag = 0; ii < 20; ii++ ) {
-    //     if (pr_users_[ii].sockfd_ != -1) {
-    //         flag = ii;
-    //     }
-    //     if (flag) {
-    //         pr_users_[ii].print();
-    //         if (ii - flag == 1) {
-    //             break;
-    //         }
-    //     }
-    // }
     for (int ii = 7, flag = 0; ii < 20; ii++ ) {
         if (pr_users_[ii].sockfd_ != -1) {
             flag = ii;
         }
-        if (ii - flag == 1) {
+        if (flag) {
             DBG("sockfd = %d", ii);
             pr_users_[ii].print();
-            break;
         }
     }
 }
@@ -239,21 +214,16 @@ bool server::read_message_head(int client_fd) {
     DBGIN(" read_message_head");
     user &ref_user = pr_users_[client_fd];
     auto &message = ref_user.message_;
-    test();
-    // sleep(1);
+    auto &next_user = pr_users_[client_fd + 1];
     const int header_length = sizeof(message.header_);
     DBG("header_length=%d", header_length);
-    test();
     int n_len = recv(client_fd, &message.header_ + message.header_index_,
                      header_length - message.header_index_, 0);
     if (n_len <= 0) {
         return false;
     }
-    // sleep(1);
     DBG("header_index_=%d, n_len = %d",message.header_index_, n_len);
-    test();
     message.header_index_ += n_len;
-    test();
     // DBG("sockfd[%d] message:header={{content_length_=%d, type_=%d}, index=%d}",
     //     client_fd,
     //     message.header_.content_length_, message.header_.type_, message.header_index_);
@@ -262,10 +232,8 @@ bool server::read_message_head(int client_fd) {
     } else {
         DBG("change to read_message_content.");
         message.header_index_ = 0;
-        test();
         message.check_state_ = message::CHECK_STATE_CONTENT;
-    }    test();
-
+    }
     return true;
 }
 
@@ -326,8 +294,6 @@ void server::do_reactor() {
 
     struct epoll_event events[max_sockfd_];
     for (;;) {
-
-
         DBGIN(" epoll_wait");
         const int nfds = epoll_wait(epollfd, events, max_sockfd_, -1);
         DBGOUT(" epoll_wait");
@@ -356,6 +322,7 @@ void server::do_reactor() {
                 DBGIN(" read message");
                 const int client_fd = events[i].data.fd;
                 const user &mid_user = pr_users_[client_fd];
+                
                 if (mid_user.message_.check_state_ == message::CHECK_STATE_HEADER) {
                     DBG("CHECK_STATE_HEADER");
                     if (read_message_head(client_fd) == false) {

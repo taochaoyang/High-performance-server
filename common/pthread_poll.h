@@ -117,7 +117,7 @@ void pthread_pool< T >::run()
             mutex_.unlock();
             continue;
         }
-        T request = workqueue_.front();
+        T &request = workqueue_.front();
         workqueue_.pop_front();
         mutex_.unlock();
         //cout << "request: " << request << std::endl;

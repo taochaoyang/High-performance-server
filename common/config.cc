@@ -10,7 +10,7 @@
 std::shared_ptr<config> config::config_ptr_ = nullptr;
 
 config::config() {
-    std::ifstream config_file("./config/config.txt");
+    std::ifstream config_file("../config/config.txt");
     if (config_file.is_open() == false) {
         std::cerr << "Open config/config.txt failed." << std::endl;
         exit(errno);
