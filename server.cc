@@ -40,10 +40,10 @@ void server::init_server(int port) {
     }
     auto &config = config::get_config_ptr()->config_;
     
-    max_online_user_ = atoi(config["max_online_user_"].c_str());
-    max_sockfd_ = max_online_user_ + 3;
-    pr_users_ = new user[max_sockfd_];
-    DBG("max_sockfd_: %d ", max_sockfd_);
+    limit_online_user_ = atoi(config["limit_online_user_"].c_str());
+    limit_sockfd_ = limit_online_user_ + 3;
+    pr_users_ = new user[limit_sockfd_];
+    DBG("limit_sockfd_: %d ", limit_sockfd_);
 
     try
     {
@@ -56,7 +56,7 @@ void server::init_server(int port) {
             perror("bind");
             exit(errno);
         }
-        if (listen(server_listen_fd_, max_conn_waiting_num_) < 0) {
+        if (listen(server_listen_fd_, limit_conn_waiting_num_) < 0) {
             perror("listen");
             exit(errno);
         }
@@ -95,7 +95,8 @@ void server::send_ack(const int ack, int client_fd) {
 }
 
 void server::do_verify_token() {
-    const int epollfd = epoll_create(1);
+    verify_token_epollfd = epoll_create(1);
+    const int &epollfd = verify_token_epollfd;
 
     // add the read_pipe1 to the epoll
     struct epoll_event ev;
@@ -106,10 +107,10 @@ void server::do_verify_token() {
         exit(errno);
     }
 
-    struct epoll_event events[max_sockfd_];
+    struct epoll_event events[limit_sockfd_];
     for(;;) {
         DBGIN(" epoll_wait");
-        const int nfds = epoll_wait(epollfd, events, max_sockfd_, -1);
+        const int nfds = epoll_wait(epollfd, events, limit_sockfd_, -1);
         DBGOUT(" epoll_wait");
         if (nfds == -1) {
             perror("epoll_wait");
@@ -181,16 +182,18 @@ void server::do_login() {
             perror("accept");
             exit(errno);
         }
-        if (new_client_fd >= max_sockfd_) {
-            printf("new_client_fd[%d] over max_sockfd_[%d]", new_client_fd, max_sockfd_);
+        if (new_client_fd >= limit_sockfd_) {
+            printf("new_client_fd[%d] over limit_sockfd_[%d]\n", new_client_fd, limit_sockfd_);
             close(new_client_fd);
             continue;
         }
-
+        max_sockfd_ = max(max_sockfd_, new_client_fd);
         // pr_users_[new_client_fd] = move(user(new_client_fd, client_address));
         pr_users_[new_client_fd].sockfd_ = new_client_fd;
         pr_users_[new_client_fd].addr_ = client_address;
 
+        // 三个线程为什么可以做到同步？就是通过这种机制。三个线程do_login,verify_token,do_reactor取名为a,b,c
+        // a,b,c中的sockfd几乎永远没有一个重叠的，因为他们之间的sockfd传递的逻辑是a->b->c，且只要传递之前，一定先从本地移除此sockfd。(当然线程a并没有移除sockfd，因为他根本没有监听此sockfd)
         if (write(write_pipe1, &new_client_fd, sizeof(new_client_fd)) < 0) {
             perror("write");
             exit(1);
@@ -210,7 +213,7 @@ void server::test() {
     }
 }
 
-bool server::read_message_head(int client_fd) {
+bool server::read_message_head(const int client_fd) {
     DBGIN(" read_message_head");
     user &ref_user = pr_users_[client_fd];
     auto &message = ref_user.message_;
@@ -224,9 +227,9 @@ bool server::read_message_head(int client_fd) {
     }
     DBG("header_index_=%d, n_len = %d",message.header_index_, n_len);
     message.header_index_ += n_len;
-    // DBG("sockfd[%d] message:header={{content_length_=%d, type_=%d}, index=%d}",
+    // DBG("sockfd[%d] message:header={{content_size_=%d, type_=%d}, index=%d}",
     //     client_fd,
-    //     message.header_.content_length_, message.header_.type_, message.header_index_);
+    //     message.header_.content_size_, message.header_.type_, message.header_index_);
     if (message.header_index_ < sizeof(message.header_)) {
         DBG("still need read_message_head.");
     } else {
@@ -237,17 +240,17 @@ bool server::read_message_head(int client_fd) {
     return true;
 }
 
-bool server::read_message_content(int client_fd) {
+bool server::read_message_content(const int client_fd) {
     DBGIN(" read_message_content");
     test();
 
     user &ref_user = pr_users_[client_fd];
     auto &message = ref_user.message_;
 
-    const int content_length_ = message.header_.content_length_;
+    const int content_size_ = message.header_.content_size_;
     if (message.content_index_ == 0) {
-        if (content_length_ > MAX_CONTENT_LENGTH) {
-            const char *buff = "content_length_ over MAX_CONTENT_LENGTH!Close the connection.";
+        if (content_size_ > limit_CONTENT_LENGTH) {
+            const char *buff = "content_size_ over limit_CONTENT_LENGTH!Close the connection.";
             send(client_fd, buff, sizeof(buff), 0);
             message.reset_content();
             return false;
@@ -255,24 +258,20 @@ bool server::read_message_content(int client_fd) {
         if (message.content_pr_) {
             delete(message.content_pr_);
         }
-        message.content_pr_ = new char[content_length_ + 1];
-        DBG("new message.content,and the length = %d", content_length_ + 1);
+        message.content_pr_ = new char[content_size_ + 1];
+        DBG("new message.content,and the length = %d", content_size_ + 1);
     }
 
     int n_len = recv(client_fd, message.content_pr_ + message.content_index_,
-                    content_length_ - message.content_index_, 0);
+                    content_size_ - message.content_index_, 0);
     if (n_len <= 0) {
         message.reset_content();
         return false;
     }
     DBG("sock[%d] says: %s", client_fd, message.content_pr_ + message.content_index_);
 
-    // DBG("sockfd[%d] message:header_={{content_length_=%d, type_=%d}, index_=%d},content_={%s,%d}",
-    //     client_fd,
-    //     message.header_.content_length_, message.header_.type_, message.header_index_,
-    //     message.content_pr_, message.content_index_);
     message.content_index_ += n_len;
-    if (message.content_index_ < content_length_) {
+    if (message.content_index_ < content_size_) {
         DBG("still need read_message_content.");
     } else {        
         DBG("change to read_message_head.");
@@ -283,7 +282,9 @@ bool server::read_message_content(int client_fd) {
 }
 
 void server::do_reactor() {
-    const int epollfd = epoll_create(1);
+    reactor_epollfd = epoll_create(1);
+    const int &epollfd = reactor_epollfd;
+
     struct epoll_event ev;
     ev.events = EPOLLIN;
     ev.data.fd = read_pipe2;
@@ -292,10 +293,10 @@ void server::do_reactor() {
         exit(errno);
     }
 
-    struct epoll_event events[max_sockfd_];
+    struct epoll_event events[limit_sockfd_];
     for (;;) {
         DBGIN(" epoll_wait");
-        const int nfds = epoll_wait(epollfd, events, max_sockfd_, -1);
+        const int nfds = epoll_wait(epollfd, events, limit_sockfd_, -1);
         DBGOUT(" epoll_wait");
         if (nfds == -1) {
             perror("epoll_wait");
@@ -328,14 +329,14 @@ void server::do_reactor() {
                     if (read_message_head(client_fd) == false) {
                         printf("sockfd[%d] closed connection.\n", client_fd);
 
-                        epoll_ctl(epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
+                        epoll_ctl(reactor_epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
                         close(client_fd);
                     }
                 } else if (mid_user.message_.check_state_ == message::CHECK_STATE_CONTENT) {
                     DBG("CHECK_STATE_CONTENT");
                     if (read_message_content(client_fd) == false) {
                         printf("sockfd[%d] closed connection.\n", client_fd);
-                        epoll_ctl(epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
+                        epoll_ctl(reactor_epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
                         close(client_fd);
                     }
                 }

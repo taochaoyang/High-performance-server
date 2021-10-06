@@ -8,10 +8,10 @@
 #define TP_ACK 2
 #define TP_FIN 4
 struct message_header {
-    uint32_t content_length_;
+    uint32_t content_size_;
     uint32_t type_;
 };
-#define MAX_CONTENT_LENGTH 4096
+#define limit_CONTENT_LENGTH 4096
 
 
 

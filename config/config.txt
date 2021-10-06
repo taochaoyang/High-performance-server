@@ -5,10 +5,10 @@ port 20001
 name chaoyang.tao
 
 # see listen() 
-max_conn_waiting_num 20
+limit_conn_waiting_num 20
 
 # verfy the user
 token 666
 
 # 
-max_online_user_ 20
+limit_online_user_ 20

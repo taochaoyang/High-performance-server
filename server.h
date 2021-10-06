@@ -60,9 +60,9 @@ private:
 	void send_ack(const int ack, const int client_fd);
 
 	enum MESSAGE_STATE{MESSAGE_COMPLETE, MESSAGE_ERROR, MESSAGE_OPEN};
-	bool read_message_head(int client_fd);
+	bool read_message_head(const int client_fd);
 
-	bool read_message_content(int client_fd);
+	bool read_message_content(const int client_fd);
 
 protected:
 	server(int port);
@@ -78,19 +78,25 @@ private:
 
 	int server_listen_fd_;
 	
-	int max_conn_waiting_num_;
+	int limit_conn_waiting_num_;
 
-	int max_online_user_;
+	int limit_online_user_;
+
+	int limit_sockfd_;
 
 	int max_sockfd_;
 
     pthread_t login_tid;
 	int read_pipe1;
 	int write_pipe1;
+
 	pthread_t verify_token_tid;
+	int verify_token_epollfd;
 	int read_pipe2;
 	int write_pipe2;
+
 	pthread_t reactor_tid;
+	int reactor_epollfd;
 
 	pthread_pool<user> threadpool_;
 

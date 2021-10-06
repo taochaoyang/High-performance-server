@@ -15,7 +15,7 @@ message::~message() {
 
 void message::print() {
     DBG("message::print");
-    DBG("message=> {header_:{{%d,%d},index=%d},content={%s,index=%d},check_sate={%d}}\n", header_.content_length_, header_.type_, header_index_, content_pr_ ? content_pr_: "null", content_index_, check_state_);
+    DBG("message=> {header_:{{%d,%d},index=%d},content={%s,index=%d},check_sate={%d}}\n", header_.content_size_, header_.type_, header_index_, content_pr_ ? content_pr_: "null", content_index_, check_state_);
 }
 
 void message::reset_content() {

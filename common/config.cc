@@ -85,9 +85,9 @@ bool config::judge_config() {
     std::vector<std::string> nece_strs;
 
     // server.cc
-    nece_strs.push_back("max_conn_waiting_num");
+    nece_strs.push_back("limit_conn_waiting_num");
     nece_strs.push_back("token");
-    nece_strs.push_back("max_online_user_");
+    nece_strs.push_back("limit_online_user_");
 
     for (auto key : nece_strs) {
          if (!config_.count(key)) {
