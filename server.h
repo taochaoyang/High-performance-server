@@ -30,6 +30,8 @@ public:
         server *pr_obj;
         server::type_func func;
     };
+	
+	~server();
 
 	static server *get_ptr();
 
@@ -37,25 +39,28 @@ public:
 
 	static void init_ptr(int port);
 
-	void start_listen_conn();
-
-	void do_verify_token();
-
-	void do_login();
-
-	void do_reactor();
-
-	~server() = default;
+	void run();
 
 	void make_nonblock(int fd);
 
 	void test();
+
 private:
 	void init_pipe();
 
+	void init_signal();
+
 	static void *call_back(void *);
 
-	void heartbeat();
+	void work_verify_token();
+
+	void work_login();
+
+	void work_reactor();
+
+	void signal_handler(int signal);
+	
+	void work_signal_emitter();
 
 	void send_ack(const int ack, const int client_fd);
 
@@ -64,10 +69,13 @@ private:
 
 	bool read_message_content(const int client_fd);
 
+	void heartbeat();
+
 protected:
 	server(int port);
 	
 	server();
+
 
 	void init_server(int port);
 
@@ -86,17 +94,27 @@ private:
 
 	int max_sockfd_;
 
+	sigset_t signal_mask_;
+
     pthread_t login_tid;
-	int read_pipe1;
 	int write_pipe1;
 
 	pthread_t verify_token_tid;
 	int verify_token_epollfd;
-	int read_pipe2;
+	int read_pipe1;
+	int read_pipe3;
 	int write_pipe2;
 
 	pthread_t reactor_tid;
 	int reactor_epollfd;
+	int read_pipe2;
+	int read_pipe4;
+
+	pthread_t signal_handler_tid;
+	// signal_hanlder exchange verify_token_tid and reactor_tid's heartbeat.
+	int write_pipe3;
+	int write_pipe4;
+	//enum PIPE_MESSAGE_TYPE{PIPE_MESSAGE_SIGINT, PIPE_MESSAGE_SIGQUIT, PIPE_MESSAGE_SIGALRM};
 
 	pthread_pool<user> threadpool_;
 

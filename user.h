@@ -35,7 +35,11 @@ private:
 
     int sockfd_;
 
+    bool is_validated_;
+
     int heartbeat_count_;
+
+    const static int LIMIT_HEARTBEAT_COUNT_;
 
     struct sockaddr_in addr_;
 

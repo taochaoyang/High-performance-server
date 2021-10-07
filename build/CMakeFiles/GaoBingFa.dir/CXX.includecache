@@ -113,6 +113,12 @@ getopt.h
 -
 memory
 -
+pthread.h
+-
+signal.h
+-
+stdlib.h
+-
 
 /home/tcy/gaobingfa/message.cc
 message.h
@@ -135,6 +141,8 @@ config.h
 /home/tcy/gaobingfa/config.h
 sys/socket.h
 -
+sys/time.h
+-
 arpa/inet.h
 -
 iostream
@@ -146,6 +154,10 @@ cstring
 sys/epoll.h
 -
 fcntl.h
+-
+signal.h
+-
+set
 -
 
 /home/tcy/gaobingfa/server.h

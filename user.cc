@@ -2,17 +2,18 @@
 #include "common.h"
 #include <arpa/inet.h>
 
+const int user::LIMIT_HEARTBEAT_COUNT_ = 5;
 
 user::user():sockfd_(-1),name_("noname"), 
-            heartbeat_count_(3), addr_(),
-            message_() {
-    DBG("construct user: sockfd[%d].", sockfd_);
+            heartbeat_count_(LIMIT_HEARTBEAT_COUNT_), addr_(),
+            message_(), is_validated_(false) {
+    // DBG("construct user: sockfd[%d].", sockfd_);
     // print();
 }
 
-user::user(int sockfd, struct sockaddr_in addr):sockfd_(sockfd), name_("noname"), 
-                                                heartbeat_count_(3), addr_(addr),
-                                                message_() {
+user::user(int sockfd, struct sockaddr_in addr ):sockfd_(sockfd), name_("noname"), 
+                                                heartbeat_count_(LIMIT_HEARTBEAT_COUNT_), addr_(addr),
+                                                message_(), is_validated_(false) {
     DBG("construct user: sockfd[%d].", sockfd_);
     // print();
 }

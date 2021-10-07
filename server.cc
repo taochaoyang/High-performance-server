@@ -3,13 +3,15 @@
 #include "config.h"
 
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <arpa/inet.h>
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
 #include <sys/epoll.h>
 #include <fcntl.h>
-
+#include <signal.h>
+#include <set>
 
 std::shared_ptr<server> server::server_ptr_;
 
@@ -31,6 +33,13 @@ server::server() {
     auto &config = config::get_config_ptr()->config_;
     const int port = atoi(config["port"].c_str());
     init_server(port);
+}
+
+server::~server() {
+    for (int i = 0; i < max_sockfd_; i++) {
+        // No matter is or not sockfd.
+        close(i);
+    }
 }
 
 void server::init_server(int port) {
@@ -83,8 +92,29 @@ void server::init_ptr() {
     server_ptr_.reset(new server());
 }
 
-void server::heartbeat() {
+void noting(int) {
+    pthread_t tid = pthread_self();
 
+    DBG("tid = %ld", tid);
+}
+
+void server::work_signal_emitter() {
+    struct itimerval itimer;
+    itimer.it_interval.tv_sec = 1;
+    itimer.it_interval.tv_usec = 0;
+    itimer.it_value.tv_sec = 1;
+    itimer.it_value.tv_usec = 0;
+    setitimer(ITIMER_REAL, &itimer, NULL);
+    int signum;
+    while(1) {
+        if (sigwait(&signal_mask_, &signum) != 0) {
+            perror("sigwait");
+            exit(errno);
+        }
+        DBG("okkkk");
+        write(write_pipe3, &signum, sizeof(signum));
+        write(write_pipe4, &signum, sizeof(signum));
+    }
 }
 
 void server::send_ack(const int ack, int client_fd) {
@@ -94,14 +124,15 @@ void server::send_ack(const int ack, int client_fd) {
     }
 }
 
-void server::do_verify_token() {
+void server::work_verify_token() {
     verify_token_epollfd = epoll_create(1);
     const int &epollfd = verify_token_epollfd;
 
     // add the read_pipe1 to the epoll
     struct epoll_event ev;
-    ev.events = EPOLLIN;
+    ev.events = EPOLLIN | EPOLLET;
     ev.data.fd = read_pipe1;
+    set<int> ev_sockfds;
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, read_pipe1, &ev) < 0) {
         perror("eoill_ctr");
         exit(errno);
@@ -116,6 +147,8 @@ void server::do_verify_token() {
             perror("epoll_wait");
             exit(errno);
         }
+
+        bool read_pipe3_is_ready = false;
         for (int i = 0; i < nfds; i++) {
             if (events[i].data.fd == read_pipe1) {
                 DBGIN(" read_pipe1");
@@ -129,12 +162,18 @@ void server::do_verify_token() {
                         perror("epoll_ctr");
                         exit(errno);
                     }
+                    ev_sockfds.insert(new_client_fd);
+                    pr_users_[new_client_fd].is_validated_ = false;
                 }
                 DBGOUT(" read_pipe1");
+            } else if (events[i].data.fd == read_pipe3) {
+                read_pipe3_is_ready = true;
             } else {
                 DBGIN(" verify user");
                 const int new_client_fd = events[i].data.fd;
+
                 epoll_ctl(epollfd, EPOLL_CTL_DEL, new_client_fd, NULL);                
+                ev_sockfds.erase(new_client_fd);
 
                 // verify user with token_tmp
                 const string token = config::get_config_ptr()->config_["token"];
@@ -158,21 +197,49 @@ void server::do_verify_token() {
                     perror("write");
                     exit(1);
                 }
+
                 send_ack(1, new_client_fd);
 
                 std::cout << "New sockfd ["<< new_client_fd << "] passed the verification!" << std::endl;
-                
+                pr_users_[new_client_fd].is_validated_ = true;
+                pr_users_[new_client_fd].heartbeat_count_ = user::LIMIT_HEARTBEAT_COUNT_;
                 DBGOUT(" verify user");
             }
+        }
+        if (read_pipe3_is_ready) {
+            DBGIN(" read_pipe3");
+            int signum;
+            while (read(read_pipe1, &signum, sizeof(signum)) > 0) {
+                DBG("signum = %d", signum);
+                switch(signum) {
+                    case SIGINT:
+                        return;
+                    case SIGQUIT:
+                        return;
+                    case SIGALRM:
+                        message mid_message;
+                        mid_message.header_.type_ = TP_HEARTBEAT;
+                        for (int sockfd : ev_sockfds) {
+                            if (pr_users_[sockfd].heartbeat_count_ <= 0) {
+                                epoll_ctl(epollfd, EPOLL_CTL_DEL, sockfd, NULL);                
+                                ev_sockfds.erase(epollfd);
+                                close(sockfd);
+                            }
+                            pr_users_[sockfd].heartbeat_count_--;
+                            send(sockfd, &mid_message, sizeof(mid_message), 0);
+                        }
+                }
+            }
+            DBGOUT(" read_pipe3");
         }
     }
 }
 
-// 1. Communicat with do_verify_token() by pipe.see: https://www.javaroad.cn/questions/47889
-//    do_login() would add one client_sockfd to pipe once one client_sockfd is created.
-void server::do_login() {
+// 1. Communicat with work_verify_token() by pipe.see: https://www.javaroad.cn/questions/47889
+//    work_login() would add one client_sockfd to pipe once one client_sockfd is created.
+void server::work_login() {
     while(1) {
-        DBGIN(" do_login");
+        DBGIN(" work_login");
         struct sockaddr_in client_address;
         socklen_t len = sizeof(client_address);
         int new_client_fd = accept(server_listen_fd_, (struct sockaddr *)&client_address, &len);
@@ -192,7 +259,7 @@ void server::do_login() {
         pr_users_[new_client_fd].sockfd_ = new_client_fd;
         pr_users_[new_client_fd].addr_ = client_address;
 
-        // 三个线程为什么可以做到同步？就是通过这种机制。三个线程do_login,verify_token,do_reactor取名为a,b,c
+        // 三个线程为什么可以做到同步？就是通过这种机制。三个线程work_login,verify_token,work_reactor取名为a,b,c
         // a,b,c中的sockfd几乎永远没有一个重叠的，因为他们之间的sockfd传递的逻辑是a->b->c，且只要传递之前，一定先从本地移除此sockfd。(当然线程a并没有移除sockfd，因为他根本没有监听此sockfd)
         if (write(write_pipe1, &new_client_fd, sizeof(new_client_fd)) < 0) {
             perror("write");
@@ -281,12 +348,12 @@ bool server::read_message_content(const int client_fd) {
     return true;
 }
 
-void server::do_reactor() {
+void server::work_reactor() {
     reactor_epollfd = epoll_create(1);
     const int &epollfd = reactor_epollfd;
 
     struct epoll_event ev;
-    ev.events = EPOLLIN;
+    ev.events = EPOLLIN | EPOLLET;
     ev.data.fd = read_pipe2;
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, read_pipe2, &ev) < 0) {
         perror("eoill_ctr");
@@ -359,28 +426,10 @@ void server::make_nonblock(int fd) {
     }
 }
 
-void server::init_pipe() {
-    int pipefds1[2] = {};
-    if (pipe(pipefds1) < 0) {
-        perror("pipe");
-        exit(1);
-    }
-    read_pipe1 = pipefds1[0];
-    write_pipe1 = pipefds1[1];
-    int pipefds2[2] = {};
-    if (pipe(pipefds2) < 0) {
-        perror("pipe");
-        exit(1);
-    }    read_pipe2 = pipefds2[0];
-    write_pipe2 = pipefds2[1];   
-
-    make_nonblock(read_pipe1);
-    make_nonblock(write_pipe1);
-    make_nonblock(read_pipe2);
-    make_nonblock(write_pipe2);
-}
-
 void *server::call_back(void *arg) {
+    pthread_t tid = pthread_self();
+    DBG("tid = %ld", tid);
+
     server::call_back_arg_struc *p_node = (server::call_back_arg_struc*)arg;
     auto pr_obj = p_node->pr_obj;
     auto func = p_node->func;
@@ -388,24 +437,66 @@ void *server::call_back(void *arg) {
     delete p_node;
 }
 
-void server::start_listen_conn() {
+void server::init_signal() {
+    sigemptyset(&signal_mask_);
+    // sigaddset(&signal_mask_ , SIGINT);
+    // sigaddset(&signal_mask_ , SIGQUIT);
+    sigaddset(&signal_mask_ , SIGALRM);
+
+    if(pthread_sigmask(SIG_BLOCK, &signal_mask_ , nullptr) != 0) {
+        perror("error in pthread_sigmask");
+        exit(errno);
+    }
+}
+
+void server::init_pipe() {
+    int pipefds1[2] = {};
+    int pipefds2[2] = {};
+    int pipefds3[2] = {};
+    int pipefds4[2] = {};
+    if (pipe(pipefds1) < 0 || pipe(pipefds2) || pipe(pipefds3)|| pipe(pipefds4)) {
+        perror("pipe");
+        exit(1);
+    }
+    read_pipe1 = pipefds1[0];
+    write_pipe1 = pipefds1[1]; 
+    read_pipe2 = pipefds2[0];
+    write_pipe2 = pipefds2[1];
+    read_pipe3 = pipefds3[0];
+    write_pipe3 = pipefds3[1]; 
+    read_pipe4 = pipefds4[0];
+    write_pipe4 = pipefds4[1];
+
+    make_nonblock(read_pipe1);
+    make_nonblock(write_pipe1);
+    make_nonblock(read_pipe2);
+    make_nonblock(write_pipe2);
+    make_nonblock(read_pipe3);
+    make_nonblock(write_pipe3);
+    make_nonblock(read_pipe4);
+    make_nonblock(write_pipe4);
+}
+
+void server::run() {
+    pthread_t tid = pthread_self();
+    DBG("tid = %ld", tid);
+
+    init_signal();
     init_pipe();
 
-    // main reactor
-    call_back_arg_struc *login_tid_struc = new call_back_arg_struc{this, &server::do_login};
-
-    // sub reactor
-    call_back_arg_struc *verify_token_tid_struc = new call_back_arg_struc{this, &server::do_verify_token};
-    call_back_arg_struc *reactor_struc = new call_back_arg_struc{this, &server::do_reactor};
+    call_back_arg_struc *signal_handler_struc = new call_back_arg_struc{this, &server::work_signal_emitter};
+    call_back_arg_struc *login_tid_struc = new call_back_arg_struc{this, &server::work_login};
+    call_back_arg_struc *verify_token_tid_struc = new call_back_arg_struc{this, &server::work_verify_token};
+    call_back_arg_struc *reactor_struc = new call_back_arg_struc{this, &server::work_reactor};
 
 
     pthread_create(&login_tid, nullptr, call_back, login_tid_struc);
-
     pthread_create(&verify_token_tid, nullptr, call_back, verify_token_tid_struc);
     pthread_create(&reactor_tid, nullptr, call_back, reactor_struc);
-
+    pthread_create(&signal_handler_tid, nullptr, call_back, signal_handler_struc);
 
     pthread_join(login_tid, nullptr);
     pthread_join(verify_token_tid, nullptr);
     pthread_join(reactor_tid, nullptr);
+    pthread_join(signal_handler_tid, nullptr);
 }

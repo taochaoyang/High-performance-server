@@ -12,10 +12,26 @@
 #include <iostream>
 #include <getopt.h>
 #include <memory>
+#include <pthread.h>
+#include <signal.h>
+#include <stdlib.h>
 
 const int six = 666;
 
 void run(int port) {
+    pthread_t tid = pthread_self();
+    DBG("tid = %ld", tid);
+    
+    // sigset_t signal_mask;
+    // sigemptyset(&signal_mask);
+    // // sigaddset(&signal_mask_ , SIGINT);
+    // // sigaddset(&signal_mask_ , SIGQUIT);
+    // sigaddset(&signal_mask , SIGALRM);
+    // if(pthread_sigmask(SIG_BLOCK, &signal_mask , nullptr) != 0) {
+    //     perror("error in pthread_sigmask");
+    //     exit(errno);
+    // }
+
     DBG("run\n");
 
     if (port < 0) {
@@ -23,7 +39,7 @@ void run(int port) {
     } else {
         server::init_ptr(port);
     }
-    server::get_ptr()->start_listen_conn();
+    server::get_ptr()->run();
 }
 
 int main(int argc, char **argv) {

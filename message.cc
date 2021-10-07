@@ -5,7 +5,7 @@
 
 message::message():header_(), header_index_(0), content_pr_(nullptr),
             content_index_(0), check_state_(CHECK_STATE_HEADER) {
-    DBG("construct message.");
+    // DBG("construct message.");
     // print();
 }
 
