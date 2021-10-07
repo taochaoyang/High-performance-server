@@ -46,7 +46,7 @@ public:
 	void test();
 
 private:
-	void init_pipe();
+	void init_pipe_and_epoll();
 
 	void init_signal();
 
@@ -54,7 +54,7 @@ private:
 
 	void work_verify_token();
 
-	void work_login();
+	void work_accept();
 
 	void work_reactor();
 
@@ -97,23 +97,25 @@ private:
 	sigset_t signal_mask_;
 
     pthread_t login_tid;
+	int read_pipe3_1;
 	int write_pipe1;
 
 	pthread_t verify_token_tid;
 	int verify_token_epollfd;
 	int read_pipe1;
-	int read_pipe3;
-	int write_pipe2;
+	int write_pipe2;	
+	int read_pipe3_2;
 
 	pthread_t reactor_tid;
 	int reactor_epollfd;
 	int read_pipe2;
-	int read_pipe4;
+	int read_pipe3_3;
 
 	pthread_t signal_handler_tid;
 	// signal_hanlder exchange verify_token_tid and reactor_tid's heartbeat.
-	int write_pipe3;
-	int write_pipe4;
+	int write_pipe3_1;
+	int write_pipe3_2;
+	int write_pipe3_3;
 	//enum PIPE_MESSAGE_TYPE{PIPE_MESSAGE_SIGINT, PIPE_MESSAGE_SIGQUIT, PIPE_MESSAGE_SIGALRM};
 
 	pthread_pool<user> threadpool_;
