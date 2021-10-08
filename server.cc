@@ -44,6 +44,8 @@ server::~server() {
 }
 
 void server::init_server(int port) {
+
+
     if (config::get_config_ptr() == nullptr) {
         std::cerr << "config_ptr_ is nullptr." << std::endl;
         exit(errno);
@@ -112,12 +114,13 @@ void server::work_signal_emitter() {
             perror("sigwait");
             exit(errno);
         }
-        DBG("okkkk");
+        DBG("Receive one signal: %d", signum);
         write(write_pipe3_1, &signum, sizeof(signum));
         write(write_pipe3_2, &signum, sizeof(signum));
         write(write_pipe3_3, &signum, sizeof(signum));
 
         if (signum == SIGINT || signum == SIGQUIT) {
+            DBG("signum = %d", signum);
             DBG("write_pipe3_* make me return");
             return;
         }

@@ -118,9 +118,9 @@ private:
 	int write_pipe3_3;
 	//enum PIPE_MESSAGE_TYPE{PIPE_MESSAGE_SIGINT, PIPE_MESSAGE_SIGQUIT, PIPE_MESSAGE_SIGALRM};
 
-	pthread_pool<user> threadpool_;
-
-
+	// Thanks to the below threadpool_ creating some pthread before I set signal_mask so that I've been debugging for so long....
+	// Annotation threadpool_,or another way is setting signal_mask before create server object. 
+	// pthread_pool<user> threadpool_;
 };
 
 

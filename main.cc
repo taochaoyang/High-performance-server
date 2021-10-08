@@ -19,16 +19,6 @@
 const int six = 666;
 
 void run(int port) {
-    sigset_t signal_mask_;
-    sigemptyset(&signal_mask_);
-    sigaddset(&signal_mask_ , SIGINT);
-    sigaddset(&signal_mask_ , SIGQUIT);
-    sigaddset(&signal_mask_ , SIGALRM);
-    if(pthread_sigmask(SIG_BLOCK, &signal_mask_ , nullptr) != 0) {
-        perror("error in pthread_sigmask");
-        exit(errno);
-    }
-
     DBG("run\n");
 
     if (port < 0) {
