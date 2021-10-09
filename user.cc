@@ -2,7 +2,7 @@
 #include "common.h"
 #include <arpa/inet.h>
 
-const int user::LIMIT_HEARTBEAT_COUNT_ = 5;
+const int user::LIMIT_HEARTBEAT_COUNT_ = 4;
 
 user::user():sockfd_(-1),name_("noname"), 
             heartbeat_count_(LIMIT_HEARTBEAT_COUNT_), addr_(),
@@ -19,9 +19,9 @@ user::user(int sockfd, struct sockaddr_in addr ):sockfd_(sockfd), name_("noname"
 }
 
 user::~user() {
-    DBGIN("destory user");
+    // DBGIN("destory user");
     // print();
-    DBGOUT("destory user");
+    // DBGOUT("destory user");
 }
 
 void user::print() {

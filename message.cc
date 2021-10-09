@@ -10,7 +10,10 @@ message::message():header_(), header_index_(0), content_pr_(nullptr),
 }
 
 message::~message() {
-    DBGOUT("destory message");
+    if (content_pr_ != nullptr) {
+        delete content_pr_;
+    }
+    // DBGOUT("destory message");
 }
 
 void message::print() {
@@ -19,7 +22,9 @@ void message::print() {
 }
 
 void message::reset_content() {
-    delete(content_pr_);
+    if (content_pr_) {
+        delete content_pr_;
+    }
     content_pr_ = nullptr;
     content_index_ = 0;
     check_state_ = CHECK_STATE_HEADER;

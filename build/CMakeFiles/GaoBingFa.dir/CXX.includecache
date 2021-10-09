@@ -161,6 +161,8 @@ set
 -
 sys/select.h
 -
+vector
+-
 
 /home/tcy/gaobingfa/server.h
 common.h

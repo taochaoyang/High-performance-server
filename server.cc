@@ -13,6 +13,7 @@
 #include <signal.h>
 #include <set>
 #include <sys/select.h>
+#include <vector>
 
 std::shared_ptr<server> server::server_ptr_;
 
@@ -127,7 +128,11 @@ void server::work_signal_emitter() {
     }
 }
 
-void server::send_ack(const int ack, int client_fd) {
+void server::send_message_header(const message_header::MESSAGE_HEADER_TYPE ack, int client_fd) {
+    message_header mid_message_header;
+    mid_message_header.type_ = message_header::TP_FAILED;
+    mid_message_header.content_size_ = 0;
+
     if (send(client_fd, &ack, sizeof(ack), 0) < 0) {
         perror("send");
         exit(1);
@@ -163,6 +168,7 @@ void server::work_verify_token() {
                         exit(errno);
                     }
                     ev_sockfds.insert(new_client_fd);
+                    DBG("666666666666666666666666666666666666666666");
                     pr_users_[new_client_fd].is_validated_ = false;
                 }
                 DBGOUT(" read_pipe1");
@@ -173,38 +179,65 @@ void server::work_verify_token() {
                 DBGIN(" verify user");
                 const int new_client_fd = events[i].data.fd;
 
-                epoll_ctl(epollfd, EPOLL_CTL_DEL, new_client_fd, NULL);                
-                ev_sockfds.erase(new_client_fd);
+                const user &mid_user = pr_users_[new_client_fd];
+                
+                if (mid_user.message_.check_state_ == message::CHECK_STATE_HEADER) {
+                    DBG("CHECK_STATE_HEADER");
+                    if (read_message_head(new_client_fd) == false) {
+                        printf("sockfd[%d] closed connection.\n", new_client_fd);
+                        epoll_ctl(epollfd, EPOLL_CTL_DEL, new_client_fd, nullptr);
+                        ev_sockfds.erase(new_client_fd);
+                        close(new_client_fd);
+                    }
+                } else if (mid_user.message_.check_state_ == message::CHECK_STATE_CONTENT) {
 
-                // verify user with token_tmp
-                const string token = config::get_config_ptr()->config_["token"];
-                char token_tmp[token.size() + 1] = {};
-                const int re = recv(new_client_fd, token_tmp, token.size(), 0);
-                DBG("token: %s, token_tmp: %s len= %zu", token.c_str(), token_tmp, token.length());
-                if (re <= 0) {
-                    close(new_client_fd);
-                    std::cout << "New sockfd ["<< new_client_fd << "] connection error!" << std::endl;
-                    continue;
-                }
-                if (token_tmp != token) {
-                    std::cout << "New sockfd ["<< new_client_fd << "] failed the verification!" << std::endl;
-                    send_ack(0, new_client_fd);
-                    close(new_client_fd);
-                    continue;
-                }
-                DBG("else");
-                if (write(write_pipe2, &new_client_fd, sizeof(new_client_fd)) < 0) {
-                    send_ack(0, new_client_fd);
-                    perror("write");
-                    exit(1);
-                }
+                    // read_message_content.
+                    DBG("CHECK_STATE_CONTENT");
+                    char *pr_content = nullptr;
+                    int content_length = 0;
+                    if (read_message_content(new_client_fd, pr_content, content_length) == false) {
+                        printf("sockfd[%d] verified failed,closed connection.\n", new_client_fd);
+                        send_message_header(message_header::TP_FAILED, new_client_fd);
+                        epoll_ctl(epollfd, EPOLL_CTL_DEL, new_client_fd, nullptr);
+                        ev_sockfds.erase(new_client_fd);
+                        close(new_client_fd);
+                    }
+                    if  (pr_content == nullptr) {
+                        continue;
+                    }
 
-                send_ack(1, new_client_fd);
+                    // read_message_content completely.
+                    DBG("content = %s, length = %d", pr_content, content_length);
+                    epoll_ctl(epollfd, EPOLL_CTL_DEL, new_client_fd, NULL);                
+                    ev_sockfds.erase(new_client_fd);
 
-                std::cout << "New sockfd ["<< new_client_fd << "] passed the verification!" << std::endl;
-                pr_users_[new_client_fd].is_validated_ = true;
-                pr_users_[new_client_fd].heartbeat_count_ = user::LIMIT_HEARTBEAT_COUNT_;
-                DBGOUT(" verify user");
+                    // Verify user by comparing pr_content and token.
+                    const string token = config::get_config_ptr()->config_["token"];
+                    if (content_length <= 0) {
+                        send_message_header(message_header::TP_ERROR, new_client_fd);
+                        close(new_client_fd);
+                        std::cout << "New sockfd ["<< new_client_fd << "] connection error!" << std::endl;
+                        continue;
+                    }
+                    if (pr_content != token) {
+                        std::cout << "New sockfd ["<< new_client_fd << "] failed the verification!" << std::endl;
+                        send_message_header(message_header::TP_FAILED, new_client_fd);
+                        close(new_client_fd);
+                        continue;
+                    }
+
+                    // verify pass
+                    send_message_header(message_header::TP_SUCCESS, new_client_fd);
+                    std::cout << "New sockfd ["<< new_client_fd << "] passed the verification!" << std::endl;
+                    pr_users_[new_client_fd].is_validated_ = true;
+                    pr_users_[new_client_fd].heartbeat_count_ = user::LIMIT_HEARTBEAT_COUNT_;                    
+                    if (write(write_pipe2, &new_client_fd, sizeof(new_client_fd)) < 0) {
+                        send_message_header(message_header::TP_ERROR, new_client_fd);
+                        perror("write");
+                        exit(1);
+                    }
+                    DBGOUT(" verify user");
+                }
             }
         }
         if (read_pipe3_3_is_ready) {
@@ -220,17 +253,26 @@ void server::work_verify_token() {
                         DBG("write_pipe3_* make me return");
                         return;
                     case SIGALRM:
-                        message mid_message;
-                        mid_message.header_.type_ = TP_HEARTBEAT;
+                        message_header mid_message_header;
+                        mid_message_header.type_ = message_header::TP_HEARTBEAT;
+                        mid_message_header.content_size_ = 0;
+
+                        vector<int> deleted_sockfd;
                         for (int sockfd : ev_sockfds) {
                             if (pr_users_[sockfd].heartbeat_count_ <= 0) {
                                 epoll_ctl(epollfd, EPOLL_CTL_DEL, sockfd, NULL);                
-                                ev_sockfds.erase(epollfd);
+                                deleted_sockfd.push_back(sockfd);          
                                 close(sockfd);
+                                continue;
                             }
                             pr_users_[sockfd].heartbeat_count_--;
-                            send(sockfd, &mid_message, sizeof(mid_message), 0);
+                            DBG("pr_users_[%d].heartbeat_count_ = %d", sockfd, pr_users_[sockfd].heartbeat_count_);
+                            send(sockfd, &mid_message_header, sizeof(mid_message_header), 0);
                         }
+                        for (int sockfd : deleted_sockfd) {
+                            ev_sockfds.erase(sockfd);
+                        }
+                        break;
                 }
             }
             DBGOUT(" read_pipe3_3");
@@ -246,6 +288,8 @@ void server::work_accept() {
         struct sockaddr_in client_address;
         socklen_t len = sizeof(client_address);
 
+        // make server_listen_fd_ nonblock to avoid blocking because we decide to use select.
+        make_nonblock(server_listen_fd_);
         while(1) {
             fd_set readfds;
             FD_ZERO(&readfds);
@@ -257,55 +301,55 @@ void server::work_accept() {
                 perror("select");
                 exit(errno);
             }
-            for (int i = 0; i < maxfd; i++) {
-                if (FD_ISSET(server_listen_fd_, &readfds)) {
-                    int new_client_fd = accept(server_listen_fd_, (struct sockaddr *)&client_address, &len);
-                    printf("New sockfd %d try to connect.\n", new_client_fd);
 
-                    if (new_client_fd < 0) {
-                        perror("accept");
-                        exit(errno);
-                    }
-                    if (new_client_fd >= limit_sockfd_) {
-                        printf("new_client_fd[%d] over limit_sockfd_[%d]\n", new_client_fd, limit_sockfd_);
-                        close(new_client_fd);
-                        continue;
-                    }
-                    max_sockfd_ = max(max_sockfd_, new_client_fd);
-                    pr_users_[new_client_fd] = move(user(new_client_fd, client_address));
-                    // pr_users_[new_client_fd].sockfd_ = new_client_fd;
-                    // pr_users_[new_client_fd].addr_ = client_address;
+            if (FD_ISSET(server_listen_fd_, &readfds)) {
+                int new_client_fd = accept(server_listen_fd_, (struct sockaddr *)&client_address, &len);
+                printf("New sockfd %d try to connect.\n", new_client_fd);
 
-                    // 三个线程为什么可以做到同步？就是通过这种机制。三个线程work_accept,verify_token,work_reactor取名为a,b,c
-                    // a,b,c中的sockfd几乎永远没有一个重叠的，因为他们之间的sockfd传递的逻辑是a->b->c，且只要传递之前，一定先从本地移除此sockfd。(当然线程a并没有移除sockfd，因为他根本没有监听此sockfd)
-                    if (write(write_pipe1, &new_client_fd, sizeof(new_client_fd)) < 0) {
-                        perror("write");
-                        exit(1);
-                    }
-                } else if (FD_ISSET(read_pipe3_1, &readfds)){
-                    int signum;
-                    while (read(read_pipe3_1, &signum, sizeof(signum)) > 0) {
-                        DBG("signum = %d", signum);
-                        switch(signum) {
-                            case SIGINT:
-                                DBG("write_pipe3_* make me return");
-                                return;
-                            case SIGQUIT:
-                                DBG("write_pipe3_* make me return");
-                                return;
-                            case SIGALRM:
-                                break;
-                        }
+                if (new_client_fd < 0) {
+                    perror("accept");
+                    exit(errno);
+                }
+                if (new_client_fd >= limit_sockfd_) {
+                    printf("new_client_fd[%d] over limit_sockfd_[%d]\n", new_client_fd, limit_sockfd_);
+                    close(new_client_fd);
+                    continue;
+                }
+                max_sockfd_ = max(max_sockfd_, new_client_fd);
+                pr_users_[new_client_fd] = move(user(new_client_fd, client_address));
+
+                // 三个线程为什么可以做到同步读写pr_users 中的数据？就是通过下面这个设计。
+                // 三个线程work_accept,verify_token,work_reactor取名为a,b,c
+                // a,b,c中的sockfd永远没有一个重叠的，因为他们之间通过管道传递sockfd，即a->b->c，且只要传递之前，一定先从本地移除此sockfd。(当然线程a并没有移除sockfd，因为他并没有监听sockfd)
+                // 如此就很显然的，每个sockfd同一时刻只会被一个线程服务。而 pr_users 是以sockfd为下标的，因此这种模式下的 pr_users 的读写 也是线程安全的
+                if (write(write_pipe1, &new_client_fd, sizeof(new_client_fd)) < 0) {
+                    send_message_header(message_header::TP_ERROR, new_client_fd);
+                    perror("write");
+                    exit(1);
+                }
+            }
+            if (FD_ISSET(read_pipe3_1, &readfds)){
+                int signum;
+                while (read(read_pipe3_1, &signum, sizeof(signum)) > 0) {
+                    DBG("signum = %d", signum);
+                    switch(signum) {
+                        case SIGINT:
+                            DBG("write_pipe3_* make me return");
+                            return;
+                        case SIGQUIT:
+                            DBG("write_pipe3_* make me return");
+                            return;
+                        case SIGALRM:
+                            break;
                     }
                 }
             }
-
         }
-
     }
 }
 
 void server::test() {
+    return;
     for (int ii = 7, flag = 0; ii < 20; ii++ ) {
         if (pr_users_[ii].sockfd_ != -1) {
             flag = ii;
@@ -329,11 +373,11 @@ bool server::read_message_head(const int client_fd) {
     if (n_len <= 0) {
         return false;
     }
-    DBG("header_index_=%d, n_len = %d",message.header_index_, n_len);
+
+    ref_user.heartbeat_count_ = user::LIMIT_HEARTBEAT_COUNT_;
+    // DBG("header_index_=%d, n_len = %d",message.header_index_, n_len);
     message.header_index_ += n_len;
-    // DBG("sockfd[%d] message:header={{content_size_=%d, type_=%d}, index=%d}",
-    //     client_fd,
-    //     message.header_.content_size_, message.header_.type_, message.header_index_);
+    message.print();
     if (message.header_index_ < sizeof(message.header_)) {
         DBG("still need read_message_head.");
     } else {
@@ -344,7 +388,7 @@ bool server::read_message_head(const int client_fd) {
     return true;
 }
 
-bool server::read_message_content(const int client_fd) {
+bool server::read_message_content(const int client_fd, char *&pr_content, int &content_length) {
     DBGIN(" read_message_content");
     test();
 
@@ -372,13 +416,18 @@ bool server::read_message_content(const int client_fd) {
         message.reset_content();
         return false;
     }
-    DBG("sock[%d] says: %s", client_fd, message.content_pr_ + message.content_index_);
 
+    ref_user.heartbeat_count_ = user::LIMIT_HEARTBEAT_COUNT_;
+    DBG("sock[%d] says: %s", client_fd, message.content_pr_ + message.content_index_);
     message.content_index_ += n_len;
+    message.print();
     if (message.content_index_ < content_size_) {
         DBG("still need read_message_content.");
     } else {        
         DBG("change to read_message_head.");
+        pr_content = message.content_pr_;
+        content_length = message.content_index_;
+        message.content_pr_ = nullptr;
         message.reset_content();
     }
     test();
@@ -414,6 +463,7 @@ void server::work_reactor() {
                         exit(errno);
                     }
                     ev_sockfds.insert(client_fd);
+                    DBG("66666666666666666666666666666666666666666666666666666666");
                     const user &mid_user= pr_users_[client_fd];
                     DBG("sockfd[%d] ip[%s]", mid_user.sockfd_, inet_ntoa(mid_user.addr_.sin_addr));
                 }
@@ -423,28 +473,36 @@ void server::work_reactor() {
             } else {
                 DBGIN(" read message");
                 const int client_fd = events[i].data.fd;
-                const user &mid_user = pr_users_[client_fd];
+                user &mid_user = pr_users_[client_fd];
                 
+                mid_user.heartbeat_count_ = user::LIMIT_HEARTBEAT_COUNT_;
+
                 if (mid_user.message_.check_state_ == message::CHECK_STATE_HEADER) {
                     DBG("CHECK_STATE_HEADER");
                     if (read_message_head(client_fd) == false) {
                         printf("sockfd[%d] closed connection.\n", client_fd);
-                        epoll_ctl(reactor_epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
+                        epoll_ctl(epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
                         ev_sockfds.erase(client_fd);
                         close(client_fd);
                     }
                 } else if (mid_user.message_.check_state_ == message::CHECK_STATE_CONTENT) {
                     DBG("CHECK_STATE_CONTENT");
-                    if (read_message_content(client_fd) == false) {
+                    char *pr_content = nullptr;
+                    int content_length = 0;
+                    if (read_message_content(client_fd, pr_content, content_length) == false) {
                         printf("sockfd[%d] closed connection.\n", client_fd);
-                        epoll_ctl(reactor_epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
+                        epoll_ctl(epollfd, EPOLL_CTL_DEL, client_fd, nullptr);
                         ev_sockfds.erase(client_fd);
                         close(client_fd);
                     }
+                    DBG("content = %s, lenth = %d", pr_content, content_length);
                 }
                 DBGOUT(" read message_");
             }
         }
+                        for (int sockfd : ev_sockfds) {
+                            DBG("sockfd = %d 666666666666666666666666666666666666666666666666", sockfd);
+                        }
         if (read_pipe3_2_is_ready) {
             DBGIN(" read_pipe3_2");
             int signum;
@@ -458,17 +516,26 @@ void server::work_reactor() {
                         DBG("write_pipe3_* make me return");
                         return;
                     case SIGALRM:
-                        message mid_message;
-                        mid_message.header_.type_ = TP_HEARTBEAT;
+                        message_header mid_message_header;
+                        mid_message_header.type_ = message_header::TP_HEARTBEAT;
+                        mid_message_header.content_size_ = 0;
+
+                        vector<int> deleted_sockfd;
                         for (int sockfd : ev_sockfds) {
                             if (pr_users_[sockfd].heartbeat_count_ <= 0) {
-                                epoll_ctl(epollfd, EPOLL_CTL_DEL, sockfd, NULL);                
-                                ev_sockfds.erase(epollfd);
+                                epoll_ctl(epollfd, EPOLL_CTL_DEL, sockfd, NULL);
+                                deleted_sockfd.push_back(sockfd);          
                                 close(sockfd);
+                                continue;
                             }
                             pr_users_[sockfd].heartbeat_count_--;
-                            send(sockfd, &mid_message, sizeof(mid_message), 0);
+                            DBG("pr_users_[%d].heartbeat_count_ = %d", sockfd, pr_users_[sockfd].heartbeat_count_);
+                            send(sockfd, &mid_message_header, sizeof(mid_message_header), 0);
                         }
+                        for (int sockfd : deleted_sockfd) {
+                            ev_sockfds.erase(sockfd);
+                        }
+                        break;
                 }
             }
             DBGOUT(" read_pipe3_2");
@@ -511,7 +578,12 @@ void server::init_signal() {
     }
 }
 
+
 void server::init_pipe_and_epoll() {
+
+    // pipefds1: bridge of communication from login_tid to verify_token_tid.
+    // pipefds2: bridge of communication from verify_token_tid to reactor_tid.
+    // pipefds3_*: bridge of communication from reactor_tid to other thress threads.
     int pipefds1[2] = {};
     int pipefds2[2] = {};
     int pipefds3_1[2] = {};
@@ -543,18 +615,6 @@ void server::init_pipe_and_epoll() {
     make_nonblock(write_pipe3_3);
 
     struct epoll_event ev;
-    reactor_epollfd = epoll_create(1);
-    ev.events = EPOLLIN | EPOLLET;
-    ev.data.fd = read_pipe2;
-    if (epoll_ctl(reactor_epollfd, EPOLL_CTL_ADD, read_pipe2, &ev) < 0) {
-        perror("eoill_ctr");
-        exit(errno);
-    }
-    ev.data.fd = read_pipe3_2;
-    if (epoll_ctl(reactor_epollfd, EPOLL_CTL_ADD, read_pipe3_2, &ev) < 0) {
-        perror("eoill_ctr");
-        exit(errno);
-    }
 
     verify_token_epollfd = epoll_create(1);
     ev.events = EPOLLIN | EPOLLET;
@@ -568,6 +628,20 @@ void server::init_pipe_and_epoll() {
         perror("eoill_ctr");
         exit(errno);
     }
+
+    reactor_epollfd = epoll_create(1);
+    ev.events = EPOLLIN | EPOLLET;
+    ev.data.fd = read_pipe2;
+    if (epoll_ctl(reactor_epollfd, EPOLL_CTL_ADD, read_pipe2, &ev) < 0) {
+        perror("eoill_ctr");
+        exit(errno);
+    }
+    ev.data.fd = read_pipe3_2;
+    if (epoll_ctl(reactor_epollfd, EPOLL_CTL_ADD, read_pipe3_2, &ev) < 0) {
+        perror("eoill_ctr");
+        exit(errno);
+    }
+
 }
 
 void server::run() {

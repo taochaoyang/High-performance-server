@@ -62,12 +62,12 @@ private:
 	
 	void work_signal_emitter();
 
-	void send_ack(const int ack, const int client_fd);
+	void send_message_header(const message_header::MESSAGE_HEADER_TYPE ack, const int client_fd);
 
 	enum MESSAGE_STATE{MESSAGE_COMPLETE, MESSAGE_ERROR, MESSAGE_OPEN};
 	bool read_message_head(const int client_fd);
 
-	bool read_message_content(const int client_fd);
+	bool read_message_content(const int client_fd, char *&content, int &content_length);
 
 	void heartbeat();
 
@@ -118,7 +118,7 @@ private:
 	int write_pipe3_3;
 	//enum PIPE_MESSAGE_TYPE{PIPE_MESSAGE_SIGINT, PIPE_MESSAGE_SIGQUIT, PIPE_MESSAGE_SIGALRM};
 
-	// Thanks to the below threadpool_ creating some pthread before I set signal_mask so that I've been debugging for so long....
+	// Thanks to the below threadpool_ creating some pthread when constructing before I set signal_mask so that I've been debugging for so long....
 	// Annotation threadpool_,or another way is setting signal_mask before create server object. 
 	// pthread_pool<user> threadpool_;
 };
