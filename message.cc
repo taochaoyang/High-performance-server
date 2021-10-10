@@ -22,12 +22,16 @@ void message::print() {
 }
 
 void message::reset_content() {
+    DBG("in reset_content");
     if (content_pr_) {
         delete content_pr_;
     }
+    DBG("12");
     content_pr_ = nullptr;
     content_index_ = 0;
     check_state_ = CHECK_STATE_HEADER;
+        DBG("out reset_content");
+
 }
 
 message& message::operator=(message &&other) {

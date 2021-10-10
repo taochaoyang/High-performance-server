@@ -11,6 +11,7 @@
 
 
 #include "config.h"
+#include "temlate_call_back.h"
 #include <iostream>
 #include <cstdio>
 #include "assert.h" 

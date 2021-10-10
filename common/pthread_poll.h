@@ -16,9 +16,11 @@ class pthread_pool
 public:
     pthread_pool( int thread_number = 8, int max_requests = 10000 );
 
+    void init();
+
     ~pthread_pool();
 
-    bool append( T* request );
+    bool append( T&& request );
 
 private:
     static void* worker( void* arg );
@@ -56,8 +58,11 @@ pthread_pool< T >::pthread_pool( int thread_number, int max_requests) :
     {
         throw std::exception();
     }
+}
 
-    for ( int i = 0; i < thread_number; ++i )
+template< typename T >
+void pthread_pool< T >::init() {
+    for ( int i = 0; i < thread_number_; ++i )
     {
         printf( "create the %dth thread\n", i );
         if( pthread_create( threads_ + i, NULL, worker, this ) != 0 )
@@ -81,9 +86,8 @@ pthread_pool< T >::~pthread_pool()
 }
 
 template< typename T >
-bool pthread_pool< T >::append( T* request )
+bool pthread_pool< T >::append( T&& request )
 {
-    DBG("request: %s", request);
     mutex_.lock();
     if ( workqueue_.size() > max_requests_ )
     {
@@ -117,11 +121,13 @@ void pthread_pool< T >::run()
             mutex_.unlock();
             continue;
         }
-        T &request = workqueue_.front();
+        DBG("2");
+        T request = workqueue_.front();
         workqueue_.pop_front();
         mutex_.unlock();
-        //cout << "request: " << request << std::endl;
-        
+        DBG("333");
+        request.call_back(&request);
+        DBG("3");
     }
 }
 

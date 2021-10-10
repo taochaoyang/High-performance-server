@@ -9,6 +9,8 @@
 ../common/common.h
 config.h
 ../common/config.h
+temlate_call_back.h
+../common/temlate_call_back.h
 iostream
 -
 cstdio
@@ -48,9 +50,13 @@ sem.h
 semaphore.h
 -
 
+../common/temlate_call_back.h
+
 /home/tcy/gaobingfa/common/common.h
 config.h
 /home/tcy/gaobingfa/common/config.h
+temlate_call_back.h
+/home/tcy/gaobingfa/common/temlate_call_back.h
 iostream
 -
 cstdio
@@ -99,6 +105,8 @@ exception
 /home/tcy/gaobingfa/common/sem.h
 semaphore.h
 -
+
+/home/tcy/gaobingfa/common/temlate_call_back.h
 
 /home/tcy/gaobingfa/main.cc
 server.h

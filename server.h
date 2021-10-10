@@ -25,11 +25,7 @@ class server {
 
 public:
     // typedef void (server::*type_func)(void);
-	using type_func = void (server::*)(void);
-    struct call_back_arg_struc{
-        server *pr_obj;
-        server::type_func func;
-    };
+
 	
 	~server();
 
@@ -50,8 +46,6 @@ private:
 
 	void init_signal();
 
-	static void *call_back(void *);
-
 	void work_verify_token();
 
 	void work_accept();
@@ -62,7 +56,11 @@ private:
 	
 	void work_signal_emitter();
 
-	void send_message_header(const message_header::MESSAGE_HEADER_TYPE ack, const int client_fd);
+	void send_message(const int client_fd, const message_header::MESSAGE_HEADER_TYPE type, const int content_size = 1, const char *pr_content = "\0");
+
+	void send_message(const int client_fd, const char *pr_content = "\0");
+
+	void close_sockfd(const int client_fd, const message_header::MESSAGE_HEADER_TYPE type = message_header::TP_FIN, const int content_size = 1, const char *pr_content = "\0");
 
 	enum MESSAGE_STATE{MESSAGE_COMPLETE, MESSAGE_ERROR, MESSAGE_OPEN};
 	bool read_message_head(const int client_fd);
@@ -71,11 +69,14 @@ private:
 
 	void heartbeat();
 
+	void thread_poll_work();
+
+	void pthread_work1(const int client_fd, const char *pr_content);
+	
 protected:
 	server(int port);
 	
 	server();
-
 
 	void init_server(int port);
 
@@ -120,7 +121,10 @@ private:
 
 	// Thanks to the below threadpool_ creating some pthread when constructing before I set signal_mask so that I've been debugging for so long....
 	// Annotation threadpool_,or another way is setting signal_mask before create server object. 
-	// pthread_pool<user> threadpool_;
+	
+	// call_back would run: ojb.function(arg)
+	using type_threadpoll_request = template_call_back_with_two_arg<server *, void (server::*)(const int ,const char *), const int, const char *>;
+	pthread_pool<type_threadpoll_request> threadpool_;
 };
 
 
